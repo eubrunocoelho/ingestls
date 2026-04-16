@@ -1,6 +1,7 @@
 import os
 
 
+# Função para detectar arquivo binário
 def is_binary(file_path):
     try:
         with open(file_path, 'rb') as f:
@@ -27,25 +28,29 @@ while True:
 output_file = os.path.join(os.getcwd(), 'resultado.txt')
 
 with open(output_file, 'w', encoding='utf-8') as output:
-    for file in os.listdir(path):
-        full_path = os.path.join(path, file)
+    for root, dirs, files in os.walk(path):
 
-        # Garante que é arquivo
-        if os.path.isfile(full_path):
-            # Ignora arquivos binários
+        for file in files:
+            full_path = os.path.join(root, file)
+
+            # Evita ler o próprio arquivo de saída
+            if os.path.abspath(full_path) == os.path.abspath(output_file):
+                continue
+
+            # Ignora binários
             if is_binary(full_path):
-                print(f'Ignorado (binário): {file}')
+                print(f'Ignorado (binário): {full_path}')
                 continue
 
             try:
                 with open(full_path, 'r', encoding='utf-8') as f:
-                    output.write(f'-- {file} --\n')  # identifica o arquivo
+                    output.write(f'-- {full_path} --\n')
                     output.write(f.read())
-                    output.write('\n\n')  # separação entre arquivos
+                    output.write('\n\n')
 
-                print(f'Adicionado: {file}')
+                print(f'Adicionado: {full_path}')
 
             except Exception as e:
-                print(f'Erro ao ler {file}: {e}')
+                print(f'Erro ao ler {full_path}: {e}')
 
 print(f'\nArquivo gerado em: {output_file}')
