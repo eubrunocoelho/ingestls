@@ -1,5 +1,19 @@
 import os
 
+
+def is_binary(file_path):
+    try:
+        with open(file_path, 'rb') as f:
+            chunk = f.read(1024)  # Lê só os primeiros 1kb
+
+            if b'\x00' in chunk:
+                return True  # binário (tem byte nulo)
+
+        return False  # provavelmente texto
+    except:
+        return True  # se deu erro, trate como binário
+
+
 # Pede o diretório ao usuário
 while True:
     path = input('Digite o caminho do diretório: ')
@@ -18,6 +32,11 @@ with open(output_file, 'w', encoding='utf-8') as output:
 
         # Garante que é arquivo
         if os.path.isfile(full_path):
+            # Ignora arquivos binários
+            if is_binary(full_path):
+                print(f'Ignorado (binário): {file}')
+                continue
+
             try:
                 with open(full_path, 'r', encoding='utf-8') as f:
                     output.write(f'-- {file} --\n')  # identifica o arquivo
