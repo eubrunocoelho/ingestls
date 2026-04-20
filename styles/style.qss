@@ -1,0 +1,81 @@
+#inputDirectory, #inputIgnore {
+    background-color: #e8f0fe;
+    border: 3px solid #111827;
+    border-radius: 4px;
+    color: #374151;
+    font-weight: bold;
+    padding: 0 14px;
+}
+
+#ingestButton {
+    background-color: #ffc480;
+    border: 3px solid #111827;
+    border-radius: 4px;
+    color: #000000;
+    font-weight: bold;
+    padding: 0 14px;
+    text-align: center;
+}
+
+#ingestButton:hover {
+    background-color: #f5b56c;
+}
+
+#ingestButton:pressed {
+    background-color: #e69840;
+}
+
+#textArea {
+    background-color: #e8f0fe;
+    border: 3px solid #111827;
+    border-radius: 4px;
+    color: #374151;
+    font-weight: bold;
+    padding: 10px;
+}
+
+#textArea > QWidget {
+    padding: 20px 14px;
+}
+
+QWidget {
+    background-color: #fff4da;
+}
+
+QScrollBar:vertical {
+    background-color: #e8f0fe;
+    margin: 0 0 0 0;
+    width: 14px;
+}
+
+QScrollBar::handle:vertical {
+    background-color: #c1d2f6;
+}
+
+QScrollBar::handle:vertical:hover {
+    background-color: #82a4e6;
+}
+
+QScrollBar::add-line:vertical,
+QScrollBar::sub-line:vertical {
+    height: 0px;
+}
+
+QScrollBar:horizontal {
+    background-color: #e8f0fe;
+    margin: 0 0 0 0;
+    height: 14px;
+}
+
+QScrollBar::handle:horizontal {
+    background-color: #c1d2f6;
+}
+
+QScrollBar::handle:horizontal:hover {
+    background-color: #82a4e6;
+}
+
+QScrollBar::add-line:horizontal,
+QScrollBar::sub-line:horizontal {
+    width: 0px;
+}
