@@ -1,4 +1,4 @@
-from PyQt6.QtCore import QSize, Qt
+from PyQt6.QtCore import QSize, Qt, QThreadPool
 from PyQt6.QtWidgets import (
     QMainWindow,
     QVBoxLayout,
@@ -11,11 +11,15 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtGui import QFont
 
 from services.file_service import process_directory
+from app.worker import Worker
 
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+
+        self.threadpool = QThreadPool()
+
         self._setup_window()
         self._setup_ui()
 
@@ -89,9 +93,28 @@ class MainWindow(QMainWindow):
 
         ignore_patterns = [p.strip() for p in ignore_raw.split(",") if p.strip()]
 
-        # Feedback visual
+        if not path:
+            self.text_area.setPlainText("Informe um diretório.")
+            return
+
+        # UI feedback
         self.text_area.setPlainText("Processando...")
+        self.button.setEnabled(False)
 
-        result = process_directory(path, ignore_patterns)
+        # Cria worker
+        worker = Worker(process_directory, path, ignore_patterns)
 
+        # Conecta sinais
+        worker.signals.finished.connect(self._on_finished)
+        worker.signals.error.connect(self._on_error)
+
+        # Executar no background
+        self.threadpool.start(worker)
+
+    def _on_finished(self, result: str):
         self.text_area.setPlainText(result)
+        self.button.setEnabled(True)
+
+    def _on_error(self, error: str):
+        self.text_area.setPlainText(f"Erro: {error}")
+        self.button.setEnabled(True)
