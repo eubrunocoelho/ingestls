@@ -1,1 +1,14 @@
-resultado.txt
+.idea/
+.vscode/
+
+.venv/
+venv/
+env/
+
+.env
+.env.*
+
+output.txt
+
+.DS_Store
+Thumbs.db
