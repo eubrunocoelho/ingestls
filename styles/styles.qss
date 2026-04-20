@@ -50,6 +50,7 @@ QScrollBar:vertical {
 
 QScrollBar::handle:vertical {
     background-color: #c1d2f6;
+    min-height: 14px;
 }
 
 QScrollBar::handle:vertical:hover {
@@ -69,6 +70,7 @@ QScrollBar:horizontal {
 
 QScrollBar::handle:horizontal {
     background-color: #c1d2f6;
+    min-height: 14px;
 }
 
 QScrollBar::handle:horizontal:hover {

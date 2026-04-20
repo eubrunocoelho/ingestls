@@ -30,7 +30,7 @@ def should_ignore(file_path: str, ignore_patterns: list[str], base_path: str) ->
 
 
 def process_directory(path: str, ignore_patterns: list[str]) -> str:
-    if not os.path_isdir(path):
+    if not os.path.isdir(path):
         return "Diretório inválido."
 
     output = []

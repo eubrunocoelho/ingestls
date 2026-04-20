@@ -8,6 +8,8 @@ env/
 .env
 .env.*
 
+*/__pycache__
+
 output.txt
 
 .DS_Store
