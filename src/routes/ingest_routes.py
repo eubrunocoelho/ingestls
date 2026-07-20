@@ -7,3 +7,8 @@ ingest_bp = Blueprint('ingest_routes', __name__)
 @ingest_bp.route('/ingest', methods=['GET'])
 def index():
     return IngestController.index()
+
+
+@ingest_bp.route('/ingest', methods=['POST'])
+def create():
+    return IngestController.create()
