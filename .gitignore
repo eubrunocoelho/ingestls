@@ -1,0 +1,25 @@
+# Ambiente virtual
+venv/
+env/
+.venv/
+
+# Cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Variáveis de ambiente
+.env
+.flaskenv
+
+# Logs
+*.log
+
+# Sistema Operacional
+.DS_Store
+Thumbs.db
+
+# Distruição / build
+build/
+dist/
+*.egg-info/
