@@ -1,11 +1,10 @@
 from dataclasses import asdict
 
 from flask import jsonify, request
-from pydantic import ValidationError
 
 from src.dtos.ingest_request import IngestRequest
-
 from src.validators.ingest_request_validator import IngestRequestValidator
+from src.validators.request_validator import RequestValidator
 
 
 class IngestController:
@@ -17,10 +16,10 @@ class IngestController:
 
     @staticmethod
     def create():
-        try:
-            validated = IngestRequestValidator.model_validate(request.get_json())
-        except ValidationError as e:
-            return {'errors': e.errors()}, 400
+        validated = RequestValidator.validate(
+            IngestRequestValidator,
+            request.get_json(),
+        )
 
         dto = IngestRequest(
             path=validated.path,
