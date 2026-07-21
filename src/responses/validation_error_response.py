@@ -2,7 +2,9 @@ from dataclasses import asdict, dataclass, field
 
 from pydantic import ValidationError
 
-ERROR_MESSAGES = {
+from src.responses.validation_error_item import ValidationErrorItem
+
+ERROR_MESSAGES: dict[str, str] = {
     'missing': 'O campo é obrigatório.',
     'extra_forbidden': 'Campo não permitido.',
     'string_type': 'O campo deve ser uma string.',
@@ -12,16 +14,16 @@ ERROR_MESSAGES = {
 
 @dataclass(slots=True)
 class ValidationErrorResponse:
-    errors: list[dict[str, str | list[str]]] = field(default_factory=list)
+    errors: list[ValidationErrorItem] = field(default_factory=list)
 
     @classmethod
     def from_pydantic(
             cls,
-            exception: ValidationError,
+            e: ValidationError,
     ) -> "ValidationErrorResponse":
-        errors = []
+        errors: list[ValidationErrorItem] = []
 
-        for error in exception.errors():
+        for error in e.errors():
             errors.append(
                 {
                     'location': [str(value) for value in error['loc']],
@@ -35,5 +37,5 @@ class ValidationErrorResponse:
 
         return cls(errors=errors)
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, list[ValidationErrorItem]]:
         return asdict(self)

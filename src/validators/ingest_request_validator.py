@@ -10,7 +10,7 @@ class IngestRequestValidator(BaseModel):
 
     @field_validator("path")
     @classmethod
-    def validate_path(cls, value: str) -> str:
+    def validate_path(cls: type["IngestRequestValidator"], value: str) -> str:
         value = value.strip()
 
         if not value:
