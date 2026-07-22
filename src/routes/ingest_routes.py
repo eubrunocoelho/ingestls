@@ -1,15 +1,18 @@
 from flask import Blueprint
-from flask.typing import ResponseReturnValue
+
+from services.ingest_service import IngestService
 from src.controllers.ingest_controller import IngestController
 
+ingest_service = IngestService()
+ingest_controller = IngestController()
 ingest_bp: Blueprint = Blueprint('ingest_routes', __name__)
 
 
 @ingest_bp.route('/ingest', methods=['GET'])
-def index() -> ResponseReturnValue:
-    return IngestController.index()
+def index():
+    return ingest_controller.index()
 
 
 @ingest_bp.route('/ingest', methods=['POST'])
-def create() -> ResponseReturnValue:
-    return IngestController.create()
+def create():
+    return ingest_controller.create()
