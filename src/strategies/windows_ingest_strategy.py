@@ -1,17 +1,22 @@
 from pathlib import Path
 
+from src.readers.directory_reader import DirectoryReader
+from src.dtos.ingest_response_dto import IngestResponseDTO
 from src.dtos.ingest_request_dto import IngestRequestDTO
 from src.strategies.ingest_strategy import IngestStrategy
 
 
 class WindowsIngestStrategy(IngestStrategy):
+    def __init__(self, reader: DirectoryReader):
+        self.reader = reader
+
     def supports(self, dto: IngestRequestDTO) -> bool:
-        path = Path(dto.path)
+        return bool(Path(dto.path).drive)
 
-        print('PATH:', dto.path)
-        print('DRIVE:', path.drive)
+    def ingest(self, dto: IngestRequestDTO) -> IngestResponseDTO:
+        structure = self.reader.read(dto)
 
-        return Path(dto.path).drive != ''
-
-    def ingest(self, dto: IngestRequestDTO) -> None:
-        print(f'Ingerindo arquivos de `{dto.path}`')
+        return IngestResponseDTO(
+            directory_structure=structure,
+            files_content=None,
+        )

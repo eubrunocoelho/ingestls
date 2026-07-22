@@ -3,4 +3,5 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class IngestResponseDTO:
-    message: str
+    directory_structure: str
+    files_content: str | None = None

@@ -12,8 +12,4 @@ class IngestService:
     def ingest(self, dto: IngestRequestDTO) -> IngestResponseDTO:
         self.validator.validate(dto)
 
-        self.dispatcher.dispatch(dto)
-
-        return IngestResponseDTO(
-            message='Ingestão iniciada!',
-        )
+        return self.dispatcher.dispatch(dto)
