@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
 @dataclass(frozen=True)
-class IngestRequest:
+class IngestRequestDTO:
     path: str
     pattern: str | None = None

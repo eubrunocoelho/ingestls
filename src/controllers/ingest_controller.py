@@ -2,7 +2,7 @@ from dataclasses import asdict
 
 from flask import jsonify, request, Response
 
-from src.dtos.ingest_request import IngestRequest
+from src.dtos.ingest_request_dto import IngestRequestDTO
 from src.validators.ingest_request_validator import IngestRequestValidator
 from src.validators.request_validator import RequestValidator
 from src.services.ingest_service import IngestService
@@ -23,7 +23,7 @@ class IngestController:
             request.get_json(),
         )
 
-        dto = IngestRequest(
+        dto = IngestRequestDTO(
             path=validated.path,
             pattern=validated.pattern,
         )
