@@ -1,16 +1,31 @@
 from pathlib import Path
 
-from src.dtos.ingest_request_dto import IngestRequestDTO
+from src.models.directory_node import DirectoryNode
 from src.readers.directory_reader import DirectoryReader
 
 
 class WindowsDirectoryReader(DirectoryReader):
-    def read(self, dto: IngestRequestDTO) -> str:
-        directory = Path(dto.path)
+    def read(self, path: Path) -> DirectoryNode:
+        return self._build(path)
 
-        structure = []
+    def _build(self, path: Path) -> DirectoryNode:
+        node = DirectoryNode(
+            name=path.name if path.name else str(path),
+            is_directory=path.is_dir(),
+        )
 
-        for item in directory.rglob('*'):
-            structure.append(str(item))
+        if not path.is_dir():
+            return node
 
-        return '\n'.join(structure)
+        children = sorted(
+            path.iterdir(),
+            key=lambda p: (
+                p.is_file(),
+                p.name.lower(),
+            ),
+        )
+
+        for child in children:
+            node.children.append(self._build(child))
+
+        return node

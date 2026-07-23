@@ -1,3 +1,4 @@
+from src.formatters.ascii_directory_tree_formatter import AsciiDirectoryTreeFormatter
 from src.readers.windows_directory_reader import WindowsDirectoryReader
 from src.readers.windows_file_reader import WindowsFileReader
 from src.dispatchers.ingest_dispatcher import IngestDispatcher
@@ -9,9 +10,11 @@ from src.strategies.windows_ingest_strategy import WindowsIngestStrategy
 
 windows_directory_reader = WindowsDirectoryReader()
 windows_file_reader = WindowsFileReader()
+ascii_directory_tree_formatter = AsciiDirectoryTreeFormatter()
 
 windows_strategy = WindowsIngestStrategy(
     windows_directory_reader,
+    ascii_directory_tree_formatter,
     windows_file_reader,
 )
 
