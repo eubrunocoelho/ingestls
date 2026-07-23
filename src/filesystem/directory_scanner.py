@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
 
-from src.models.directory_node import DirectoryNode
+from src.filesystem.directory_node import DirectoryNode
 
 
-class DirectoryReader(ABC):
+class DirectoryScanner(ABC):
     @abstractmethod
     def read(self, path: Path) -> DirectoryNode:
         pass

@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from src.dtos.ingest_request_dto import IngestRequestDTO
-from src.readers.file_reader import FileReader
+from src.filesystem.file_reader import FileReader
 
 
 class WindowsFileReader(FileReader):

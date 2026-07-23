@@ -1,10 +1,10 @@
 from pathlib import Path
 
-from src.models.directory_node import DirectoryNode
-from src.readers.directory_reader import DirectoryReader
+from src.filesystem.directory_node import DirectoryNode
+from src.filesystem.directory_scanner import DirectoryScanner
 
 
-class WindowsDirectoryReader(DirectoryReader):
+class WindowsDirectoryScanner(DirectoryScanner):
     def read(self, path: Path) -> DirectoryNode:
         return self._build(path)
 

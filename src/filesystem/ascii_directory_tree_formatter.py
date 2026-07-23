@@ -1,4 +1,4 @@
-from src.models.directory_node import DirectoryNode
+from src.filesystem.directory_node import DirectoryNode
 
 
 class AsciiDirectoryTreeFormatter:

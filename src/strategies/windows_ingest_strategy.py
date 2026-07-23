@@ -1,8 +1,8 @@
 from pathlib import Path
 
-from src.formatters.ascii_directory_tree_formatter import AsciiDirectoryTreeFormatter
-from src.readers.file_reader import FileReader
-from src.readers.directory_reader import DirectoryReader
+from src.filesystem.ascii_directory_tree_formatter import AsciiDirectoryTreeFormatter
+from src.filesystem.file_reader import FileReader
+from src.filesystem.directory_scanner import DirectoryScanner
 from src.dtos.ingest_response_dto import IngestResponseDTO
 from src.dtos.ingest_request_dto import IngestRequestDTO
 from src.strategies.ingest_strategy import IngestStrategy
@@ -11,11 +11,11 @@ from src.strategies.ingest_strategy import IngestStrategy
 class WindowsIngestStrategy(IngestStrategy):
     def __init__(
             self,
-            directory_reader: DirectoryReader,
+            directory_scanner: DirectoryScanner,
             tree_formatter: AsciiDirectoryTreeFormatter,
             file_reader: FileReader,
     ):
-        self.directory_reader = directory_reader
+        self.directory_scanner = directory_scanner
         self.tree_formatter = tree_formatter
         self.file_reader = file_reader
 
@@ -23,7 +23,7 @@ class WindowsIngestStrategy(IngestStrategy):
         return bool(Path(dto.path).drive)
 
     def ingest(self, dto: IngestRequestDTO) -> IngestResponseDTO:
-        tree = self.directory_reader.read(
+        tree = self.directory_scanner.read(
             Path(dto.path),
         )
 
