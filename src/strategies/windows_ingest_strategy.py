@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from src.filesystem.ascii_directory_tree_formatter import AsciiDirectoryTreeFormatter
+from src.filesystem.directory_tree_renderer import DirectoryTreeRenderer
 from src.filesystem.file_reader import FileReader
 from src.filesystem.directory_scanner import DirectoryScanner
 from src.dtos.ingest_response_dto import IngestResponseDTO
@@ -12,11 +12,11 @@ class WindowsIngestStrategy(IngestStrategy):
     def __init__(
             self,
             directory_scanner: DirectoryScanner,
-            tree_formatter: AsciiDirectoryTreeFormatter,
+            directory_tree_renderer: DirectoryTreeRenderer,
             file_reader: FileReader,
     ):
         self.directory_scanner = directory_scanner
-        self.tree_formatter = tree_formatter
+        self.directory_tree_renderer = directory_tree_renderer
         self.file_reader = file_reader
 
     def supports(self, dto: IngestRequestDTO) -> bool:
@@ -27,7 +27,7 @@ class WindowsIngestStrategy(IngestStrategy):
             Path(dto.path),
         )
 
-        structure = self.tree_formatter.format(tree)
+        structure = self.directory_tree_renderer.render_tree(tree)
 
         content = self.file_reader.read(dto)
 

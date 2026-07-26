@@ -6,5 +6,5 @@ from src.filesystem.directory_node import DirectoryNode
 
 class DirectoryScanner(ABC):
     @abstractmethod
-    def read(self, path: Path) -> DirectoryNode:
+    def read(self, root: Path) -> DirectoryNode:
         pass

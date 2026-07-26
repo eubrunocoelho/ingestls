@@ -1,4 +1,4 @@
-from src.filesystem.ascii_directory_tree_formatter import AsciiDirectoryTreeFormatter
+from src.filesystem.directory_tree_renderer import DirectoryTreeRenderer
 from src.filesystem.windows_directory_scanner import WindowsDirectoryScanner
 from src.filesystem.windows_file_reader import WindowsFileReader
 from src.dispatchers.ingest_dispatcher import IngestDispatcher
@@ -10,11 +10,11 @@ from src.strategies.windows_ingest_strategy import WindowsIngestStrategy
 
 windows_directory_scanner = WindowsDirectoryScanner()
 windows_file_reader = WindowsFileReader()
-ascii_directory_tree_formatter = AsciiDirectoryTreeFormatter()
+directory_tree_renderer = DirectoryTreeRenderer()
 
 windows_strategy = WindowsIngestStrategy(
     windows_directory_scanner,
-    ascii_directory_tree_formatter,
+    directory_tree_renderer,
     windows_file_reader,
 )
 

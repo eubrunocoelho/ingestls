@@ -5,24 +5,24 @@ from src.filesystem.directory_scanner import DirectoryScanner
 
 
 class WindowsDirectoryScanner(DirectoryScanner):
-    def read(self, path: Path) -> DirectoryNode:
-        return self._build(path)
+    def read(self, root: Path) -> DirectoryNode:
+        return self._build(root)
 
-    def _build(self, path: Path) -> DirectoryNode:
+    def _build(self, root: Path) -> DirectoryNode:
         node = DirectoryNode(
-            name=path.name if path.name else str(path),
-            is_directory=path.is_dir(),
+            name=root.name if root.name else str(root),
+            is_directory=root.is_dir(),
         )
 
-        if not path.is_dir():
+        if not root.is_dir():
             return node
 
         children = sorted(
-            path.iterdir(),
+            root.iterdir(),
             key=lambda p: (
                 p.is_file(),
                 p.name.lower(),
-            ),
+            )
         )
 
         for child in children:
