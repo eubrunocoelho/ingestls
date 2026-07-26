@@ -1,9 +1,7 @@
 from abc import ABC, abstractmethod
-
-from src.dtos.ingest_request_dto import IngestRequestDTO
-
+from pathlib import Path
 
 class FileReader(ABC):
     @abstractmethod
-    def read(self, dto: IngestRequestDTO) -> str:
+    def read(self, root: Path) -> str:
         pass

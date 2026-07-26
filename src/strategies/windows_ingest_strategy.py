@@ -23,12 +23,14 @@ class WindowsIngestStrategy(IngestStrategy):
         return bool(Path(dto.path).drive)
 
     def ingest(self, dto: IngestRequestDTO) -> IngestResponseDTO:
-        tree = self.directory_scanner.read(
-            Path(dto.path),
+        root = Path(dto.path)
+
+        directory_tree = self.directory_scanner.read(
+            root,
         )
 
-        structure = self.directory_tree_renderer.render_tree(tree)
+        directory_structure = self.directory_tree_renderer.render_tree(directory_tree)
 
-        content = self.file_reader.read(dto)
+        file_content = self.file_reader.read(root)
 
-        return IngestResponseDTO(structure, content)
+        return IngestResponseDTO(directory_structure, file_content)

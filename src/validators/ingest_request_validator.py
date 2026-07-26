@@ -8,17 +8,17 @@ class IngestRequestValidator(BaseModel):
     path: str
     pattern: str | None = None
 
-    @field_validator("path")
+    @field_validator('path''')
     @classmethod
     def validate_path(cls: type["IngestRequestValidator"], value: str) -> str:
         value = value.strip()
 
         if not value:
-            raise ValueError("O campo `path` é obrigatório.")
+            raise ValueError('O campo `path` é obrigatório.')
 
         path = PureWindowsPath(value)
 
         if not path.drive:
-            raise ValueError("O caminho deve iniciar com uma unidade válida (ex.: C:\\).")
+            raise ValueError('O caminho deve iniciar com uma unidade válida (ex.: C:\\).')
 
         return value
