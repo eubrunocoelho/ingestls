@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from src.processors.pattern_set_processor import PatternSetProcessor
 from src.filesystem.directory_tree_renderer import DirectoryTreeRenderer
 from src.filesystem.file_reader import FileReader
 from src.filesystem.directory_scanner import DirectoryScanner
@@ -11,10 +12,12 @@ from src.strategies.ingest_strategy import IngestStrategy
 class WindowsIngestStrategy(IngestStrategy):
     def __init__(
             self,
+            pattern_set_processor: PatternSetProcessor,
             directory_scanner: DirectoryScanner,
             directory_tree_renderer: DirectoryTreeRenderer,
             file_reader: FileReader,
     ):
+        self.pattern_set_processor = pattern_set_processor
         self.directory_scanner = directory_scanner
         self.directory_tree_renderer = directory_tree_renderer
         self.file_reader = file_reader
@@ -23,6 +26,7 @@ class WindowsIngestStrategy(IngestStrategy):
         return bool(Path(dto.path).drive)
 
     def ingest(self, dto: IngestRequestDTO) -> IngestResponseDTO:
+        pattern = self.pattern_set_processor.process(dto.pattern)
         root = Path(dto.path)
 
         directory_tree = self.directory_scanner.read(
