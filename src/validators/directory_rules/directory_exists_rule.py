@@ -3,7 +3,7 @@ from pathlib import Path
 from src.exceptions.invalid_directory_exception import InvalidDirectoryException
 from src.exceptions.directory_not_found_exception import DirectoryNotFoundException
 from src.dtos.ingest_request_dto import IngestRequestDTO
-from src.rules.ingest_rule import IngestRule
+from src.validators.directory_rules.ingest_rule import IngestRule
 
 
 class DirectoryExistsRule(IngestRule):

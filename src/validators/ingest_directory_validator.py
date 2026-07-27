@@ -1,5 +1,5 @@
 from src.dtos.ingest_request_dto import IngestRequestDTO
-from src.rules.ingest_rule import IngestRule
+from src.validators.directory_rules.ingest_rule import IngestRule
 
 
 class IngestDirectoryValidator:
