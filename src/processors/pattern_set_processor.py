@@ -1,11 +1,33 @@
+from src.dtos.pattern_dto import PatternDTO
+from src.validators.ingest_pattern_validator import IngestPatternValidator
+
+
 class PatternSetProcessor:
-    @staticmethod
-    def process(pattern: str|None) -> list[str]:
+    def __init__(self, validator: IngestPatternValidator):
+        self.validator = validator
+
+    def process(self, pattern: str | None) -> list[PatternDTO]:
         if not pattern:
             return []
 
-        return [
-            pattern.strip()
-            for pattern in pattern.split(',')
-            if pattern.strip()
-        ]
+        result: list[PatternDTO] = []
+
+        for item in pattern.split(','):
+            item = item.strip()
+
+            if not item:
+                continue
+
+            kind = self.validator.validate(item)
+
+            if kind is None:
+                continue
+
+            result.append(
+                PatternDTO(
+                    pattern=item,
+                    kind=kind,
+                )
+            )
+
+        return result
