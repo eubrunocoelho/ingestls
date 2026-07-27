@@ -25,6 +25,7 @@ class IngestController:
 
         dto = IngestRequestDTO(
             path=validated.path,
+            pattern_type=validated.pattern_type,
             pattern=validated.pattern,
         )
 

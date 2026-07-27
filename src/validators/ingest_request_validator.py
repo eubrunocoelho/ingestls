@@ -1,14 +1,17 @@
 from pathlib import PureWindowsPath
 from pydantic import BaseModel, ConfigDict, field_validator
 
+from src.enums.pattern_type_enum import PatternTypeEnum
+
 
 class IngestRequestValidator(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     path: str
+    pattern_type: PatternTypeEnum = PatternTypeEnum.EXCLUDE
     pattern: str | None = None
 
-    @field_validator('path''')
+    @field_validator('path')
     @classmethod
     def validate_path(cls: type["IngestRequestValidator"], value: str) -> str:
         value = value.strip()
