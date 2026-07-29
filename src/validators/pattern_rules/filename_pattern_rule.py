@@ -1,5 +1,7 @@
 import re
 
+from src.dtos.pattern_dto import PatternDTO
+from src.enums.pattern_scope_enum import PatternScopeEnum
 from src.enums.pattern_kind_enum import PatternKindEnum
 from src.validators.pattern_rules.pattern_rule import PatternRule
 
@@ -7,8 +9,12 @@ from src.validators.pattern_rules.pattern_rule import PatternRule
 class FilenamePatternRule(PatternRule):
     _regex = re.compile(r'^[^/\\]+\.[A-Za-z0-9]+$')
 
-    def match(self, pattern: str) -> PatternKindEnum | None:
+    def match(self, pattern: str) -> PatternDTO | None:
         if self._regex.fullmatch(pattern):
-            return PatternKindEnum.FILE
+            return PatternDTO(
+                pattern=pattern,
+                kind=PatternKindEnum.FILE,
+                scope=PatternScopeEnum.GLOBAL,
+            )
 
         return None

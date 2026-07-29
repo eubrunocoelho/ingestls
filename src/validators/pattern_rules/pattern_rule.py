@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 
-from src.enums.pattern_kind_enum import PatternKindEnum
+from src.dtos.pattern_dto import PatternDTO
 
 
 class PatternRule(ABC):
     @abstractmethod
-    def match(self, pattern: str) -> PatternKindEnum | None:
+    def match(self, pattern: str) -> PatternDTO | None:
         pass

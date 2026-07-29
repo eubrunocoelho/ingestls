@@ -1,20 +1,20 @@
 import re
 
 from src.dtos.pattern_dto import PatternDTO
-from src.enums.pattern_scope_enum import PatternScopeEnum
 from src.enums.pattern_kind_enum import PatternKindEnum
+from src.enums.pattern_scope_enum import PatternScopeEnum
 from src.validators.pattern_rules.pattern_rule import PatternRule
 
 
-class ExtensionPatternRule(PatternRule):
-    _regex = re.compile(r'^\*\.[A-Za-z0-9]+$')
+class PathFilenamePatternRule(PatternRule):
+    _regex = re.compile(r'^[A-Za-z0-9._-]+(?:/[A-Za-z0-9._-]+)*/[^/\\]+\.[A-Za-z0-9]+$')
 
     def match(self, pattern: str) -> PatternDTO | None:
         if self._regex.fullmatch(pattern):
             return PatternDTO(
                 pattern=pattern,
-                kind=PatternKindEnum.EXTENSION,
-                scope=PatternScopeEnum.GLOBAL,
+                kind=PatternKindEnum.FILE,
+                scope=PatternScopeEnum.PATH
             )
 
         return None

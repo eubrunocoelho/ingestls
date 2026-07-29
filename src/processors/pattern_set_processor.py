@@ -18,16 +18,11 @@ class PatternSetProcessor:
             if not item:
                 continue
 
-            kind = self.validator.validate(item)
+            pattern_dto = self.validator.validate(item)
 
-            if kind is None:
+            if pattern_dto is None:
                 continue
 
-            result.append(
-                PatternDTO(
-                    pattern=item,
-                    kind=kind,
-                )
-            )
+            result.append(pattern_dto)
 
         return result

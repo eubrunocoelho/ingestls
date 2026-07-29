@@ -12,11 +12,17 @@ from src.validators.ingest_pattern_validator import IngestPatternValidator
 from src.validators.pattern_rules.extension_pattern_rule import ExtensionPatternRule
 from src.validators.pattern_rules.filename_pattern_rule import FilenamePatternRule
 from src.validators.pattern_rules.directory_pattern_rule import DirectoryPatternRule
+from src.validators.pattern_rules.path_filename_pattern_rule import PathFilenamePatternRule
+from src.validators.pattern_rules.recursive_directory_pattern_rule import RecursiveDirectoryPatternRule
+from src.validators.pattern_rules.recursive_filename_pattern_rule import RecursiveFilenamePatternRule
 
 ingest_pattern_validator = IngestPatternValidator(
     ExtensionPatternRule(),
     FilenamePatternRule(),
     DirectoryPatternRule(),
+    PathFilenamePatternRule(),
+    RecursiveDirectoryPatternRule(),
+    RecursiveFilenamePatternRule(),
 )
 
 pattern_set_processor = PatternSetProcessor(
