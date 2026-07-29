@@ -1,27 +1,18 @@
 from src.dtos.pattern_dto import PatternDTO
 from src.filesystem.directory_node import DirectoryNode
-from src.filters.locators.locator import Locator
 from src.filters.matchers.matcher import Matcher
+from src.filters.locators.locator import Locator
 
 
 class RecursiveLocator(Locator):
-    def exclude(
+    def matches(
             self,
-            root: DirectoryNode,
+            node: DirectoryNode,
+            current_path: str,
             matcher: Matcher,
             pattern: PatternDTO,
-            current_path: str = '',
-    ) -> None:
-        root.children = [
-            child
-            for child in root.children
-            if not matcher.matches(child, pattern)
-        ]
-
-        for child in root.children:
-            if child.is_directory:
-                self.exclude(
-                    child,
-                    matcher,
-                    pattern,
-                )
+    ) -> bool:
+        return matcher.matches(
+            node,
+            pattern,
+        )

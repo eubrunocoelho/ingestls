@@ -1,3 +1,6 @@
+from src.filters.factories.locator_factory import LocatorFactory
+from src.filters.factories.matcher_factory import MatcherFactory
+from src.filters.tree_filter import TreeFilter
 from src.filesystem.directory_tree_renderer import DirectoryTreeRenderer
 from src.filesystem.windows_directory_scanner import WindowsDirectoryScanner
 from src.filesystem.windows_file_reader import WindowsFileReader
@@ -15,6 +18,14 @@ from src.validators.pattern_rules.directory_pattern_rule import DirectoryPattern
 from src.validators.pattern_rules.path_filename_pattern_rule import PathFilenamePatternRule
 from src.validators.pattern_rules.recursive_directory_pattern_rule import RecursiveDirectoryPatternRule
 from src.validators.pattern_rules.recursive_filename_pattern_rule import RecursiveFilenamePatternRule
+
+locator_factory = LocatorFactory()
+matcher_factory = MatcherFactory()
+
+tree_filter = TreeFilter(
+    locator_factory,
+    matcher_factory,
+)
 
 ingest_pattern_validator = IngestPatternValidator(
     ExtensionPatternRule(),
@@ -37,6 +48,7 @@ directory_tree_renderer = DirectoryTreeRenderer()
 
 windows_strategy = WindowsIngestStrategy(
     pattern_set_processor,
+    tree_filter,
     windows_directory_scanner,
     directory_tree_renderer,
     windows_file_reader,

@@ -5,36 +5,17 @@ from src.filters.matchers.matcher import Matcher
 
 
 class PathLocator(Locator):
-    def exclude(
+    def matches(
             self,
-            root: DirectoryNode,
+            node: DirectoryNode,
+            current_path: str,
             matcher: Matcher,
             pattern: PatternDTO,
-            current_path: str = '',
-    ) -> None:
-        children = []
+    ) -> bool:
+        if current_path != pattern.value:
+            return False
 
-        for child in root.children:
-            path = (
-                child.name
-                if not current_path
-                else f'{current_path}/{child.name}'
-            )
-
-            if (
-                    matcher.matches(child, pattern)
-                    and path == pattern.pattern
-            ):
-                continue
-
-            if child.is_directory:
-                self.exclude(
-                    child,
-                    matcher,
-                    pattern,
-                    path,
-                )
-
-            children.append(child)
-
-        root.children = children
+        return matcher.matches(
+            node,
+            pattern,
+        )

@@ -1,3 +1,6 @@
+from src.filters.locators.global_locator import GlobalLocator
+from src.filters.locators.path_locator import PathLocator
+from src.filters.locators.recursive_locator import RecursiveLocator
 from src.enums.pattern_scope_enum import PatternScopeEnum
 from src.filters.locators.locator import Locator
 
@@ -11,9 +14,11 @@ class LocatorFactory:
         }
 
     def make(self, scope: PatternScopeEnum) -> Locator:
-        try:
-            return self._locators[scope]
-        except KeyError:
+        locator = self._locators.get(scope)
+
+        if locator is None:
             raise ValueError(
                 f'Locator não encontrado para \'{scope.value}\'.'
             )
+
+        return locator

@@ -13,6 +13,7 @@ class RecursiveDirectoryPatternRule(PatternRule):
         if self._regex.fullmatch(pattern):
             return PatternDTO(
                 pattern=pattern,
+                value=pattern[2:-1],
                 kind=PatternKindEnum.DIRECTORY,
                 scope=PatternScopeEnum.RECURSIVE,
             )

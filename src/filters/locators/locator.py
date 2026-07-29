@@ -7,11 +7,11 @@ from src.filters.matchers.matcher import Matcher
 
 class Locator(ABC):
     @abstractmethod
-    def exclude(
+    def matches(
             self,
-            root: DirectoryNode,
+            node: DirectoryNode,
+            current_path: str,
             matcher: Matcher,
             pattern: PatternDTO,
-            current_path: str = '',
-    ) -> None:
+    ) -> bool:
         pass

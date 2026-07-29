@@ -1,5 +1,7 @@
 from pathlib import Path
 
+from src.enums.pattern_type_enum import PatternTypeEnum
+from src.filters.tree_filter import TreeFilter
 from src.processors.pattern_set_processor import PatternSetProcessor
 from src.filesystem.directory_tree_renderer import DirectoryTreeRenderer
 from src.filesystem.file_reader import FileReader
@@ -13,11 +15,13 @@ class WindowsIngestStrategy(IngestStrategy):
     def __init__(
             self,
             pattern_set_processor: PatternSetProcessor,
+            tree_filter: TreeFilter,
             directory_scanner: DirectoryScanner,
             directory_tree_renderer: DirectoryTreeRenderer,
             file_reader: FileReader,
     ):
         self.pattern_set_processor = pattern_set_processor
+        self.tree_filter = tree_filter
         self.directory_scanner = directory_scanner
         self.directory_tree_renderer = directory_tree_renderer
         self.file_reader = file_reader
@@ -26,16 +30,21 @@ class WindowsIngestStrategy(IngestStrategy):
         return bool(Path(dto.path).drive)
 
     def ingest(self, dto: IngestRequestDTO) -> IngestResponseDTO:
-        # Padrões processados
-        pattern = self.pattern_set_processor.process(dto.pattern)
+        pattern = self.pattern_set_processor.process(
+            dto.pattern
+        )
+
         root = Path(dto.path)
 
-        # Árvore de diretórios
         directory_tree = self.directory_scanner.read(
             root,
         )
 
-        # Adicionar filtragem antes de fazer o resto.
+        if dto.pattern_type == PatternTypeEnum.EXCLUDE:
+            directory_tree = self.tree_filter.exclude(
+                root=directory_tree,
+                patterns=pattern,
+            )
 
         directory_structure = self.directory_tree_renderer.render_tree(directory_tree)
 

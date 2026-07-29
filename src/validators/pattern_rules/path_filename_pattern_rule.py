@@ -13,6 +13,7 @@ class PathFilenamePatternRule(PatternRule):
         if self._regex.fullmatch(pattern):
             return PatternDTO(
                 pattern=pattern,
+                value=pattern,
                 kind=PatternKindEnum.FILE,
                 scope=PatternScopeEnum.PATH
             )

@@ -1,8 +1,9 @@
+from src.filters.matchers.matcher import Matcher
 from src.dtos.pattern_dto import PatternDTO
 from src.filesystem.directory_node import DirectoryNode
 
 
-class FileMatcher:
+class FileMatcher(Matcher):
     def matches(
             self,
             node: DirectoryNode,
@@ -10,5 +11,5 @@ class FileMatcher:
     ) -> bool:
         return (
                 not node.is_directory
-                and node.name == pattern.pattern
+                and node.name == pattern.value
         )

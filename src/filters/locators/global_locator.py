@@ -5,15 +5,17 @@ from src.filters.matchers.matcher import Matcher
 
 
 class GlobalLocator(Locator):
-    def exclude(
+    def matches(
             self,
-            root: DirectoryNode,
+            node: DirectoryNode,
+            current_path: str,
             matcher: Matcher,
             pattern: PatternDTO,
-            current_path: str = '',
-    ) -> None:
-        root.children = [
-            child
-            for child in root.children
-            if not matcher.matches(child, pattern)
-        ]
+    ) -> bool:
+        if '/' in current_path:
+            return False
+
+        return matcher.matches(
+            node,
+            pattern,
+        )

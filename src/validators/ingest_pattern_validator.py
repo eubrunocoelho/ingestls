@@ -8,9 +8,9 @@ class IngestPatternValidator:
 
     def validate(self, pattern: str) -> PatternDTO | None:
         for rule in self.rules:
-            match = rule.match(pattern)
+            result = rule.match(pattern)
 
-            if match is not None:
-                return match
+            if result is not None:
+                return result
 
         return None
