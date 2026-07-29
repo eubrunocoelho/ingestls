@@ -26,12 +26,16 @@ class WindowsIngestStrategy(IngestStrategy):
         return bool(Path(dto.path).drive)
 
     def ingest(self, dto: IngestRequestDTO) -> IngestResponseDTO:
+        # Padrões processados
         pattern = self.pattern_set_processor.process(dto.pattern)
         root = Path(dto.path)
 
+        # Árvore de diretórios
         directory_tree = self.directory_scanner.read(
             root,
         )
+
+        # Adicionar filtragem antes de fazer o resto.
 
         directory_structure = self.directory_tree_renderer.render_tree(directory_tree)
 
