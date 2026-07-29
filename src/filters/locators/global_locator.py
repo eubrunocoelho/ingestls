@@ -12,9 +12,6 @@ class GlobalLocator(Locator):
             matcher: Matcher,
             pattern: PatternDTO,
     ) -> bool:
-        if '/' in current_path:
-            return False
-
         return matcher.matches(
             node,
             pattern,

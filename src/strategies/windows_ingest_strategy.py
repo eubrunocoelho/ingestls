@@ -40,11 +40,10 @@ class WindowsIngestStrategy(IngestStrategy):
             root,
         )
 
-        if dto.pattern_type == PatternTypeEnum.EXCLUDE:
-            directory_tree = self.tree_filter.exclude(
-                root=directory_tree,
-                patterns=pattern,
-            )
+        directory_tree = self.tree_filter.exclude(
+            root=directory_tree,
+            patterns=pattern,
+        )
 
         directory_structure = self.directory_tree_renderer.render_tree(directory_tree)
 
