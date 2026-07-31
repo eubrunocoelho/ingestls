@@ -30,7 +30,7 @@ def test_matches_valid_directory_patterns(rule, pattern, expected_value):
     'vendor',  # sem barra no final
     '*/vendor/',  # escopo recursivo, regra diferente
     'app/vendor/',  # caminho com mais de um nível não é suportado aqui
-    '.php',  # é um padrão de extensão
+    '*.php',  # é um padrão de extensão
     '',  # vazio
 ])
 def test_does_not_match_invalid_patterns(rule, pattern):

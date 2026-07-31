@@ -35,7 +35,7 @@ def test_returns_empty_list_for_none_or_empty_string(processor, pattern):
 def test_returns_empty_list_for_blank_string(processor):
     # `split(',')` numa string só de espaços gera [' '], que após `strip()` vira
     # vira '' e é descartado antes de chegar no `validator`.
-    assert processor.processor(pattern='   ') == []
+    assert processor.process(pattern='   ') == []
 
 
 def test_parses_all_six_patterns_from_the_ticket_in_order(processor):
