@@ -1,6 +1,5 @@
 from pathlib import Path
 
-from src.enums.pattern_type_enum import PatternTypeEnum
 from src.filters.tree_filter import TreeFilter
 from src.processors.pattern_set_processor import PatternSetProcessor
 from src.filesystem.directory_tree_renderer import DirectoryTreeRenderer
