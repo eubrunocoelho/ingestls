@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from src.enums.pattern_type_enum import PatternTypeEnum
 from src.filters.tree_filter import TreeFilter
 from src.processors.pattern_set_processor import PatternSetProcessor
 from src.filesystem.directory_tree_renderer import DirectoryTreeRenderer
@@ -25,6 +26,11 @@ class WindowsIngestStrategy(IngestStrategy):
         self.directory_tree_renderer = directory_tree_renderer
         self.file_reader = file_reader
 
+    _STRATEGY_BY_PATTERN_TYPE = {
+        PatternTypeEnum.INCLUDE: 'include',
+        PatternTypeEnum.EXCLUDE: 'exclude',
+    }
+
     def supports(self, dto: IngestRequestDTO) -> bool:
         return bool(Path(dto.path).drive)
 
@@ -39,7 +45,12 @@ class WindowsIngestStrategy(IngestStrategy):
             root,
         )
 
-        directory_tree = self.tree_filter.exclude(
+        method_name = self._STRATEGY_BY_PATTERN_TYPE.get(
+            dto.pattern_type, 'exclude'
+        )
+        method = getattr(self.tree_filter, method_name)
+
+        directory_tree = method(
             root=directory_tree,
             patterns=pattern,
         )
