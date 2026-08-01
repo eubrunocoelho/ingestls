@@ -18,7 +18,7 @@ class GitHubRepositoryExistsRule(IngestRule):
         if match is None:
             return
 
-        owner, repo = match.groups('owner'), match.groups('repo')
+        owner, repo = match.group('owner'), match.group('repo')
 
         if not self.github_client.repository_exists(owner, repo):
             raise GitHubRepositoryNotFoundException(dto.path)

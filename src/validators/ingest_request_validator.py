@@ -3,6 +3,8 @@ from pydantic import BaseModel, ConfigDict, field_validator
 
 from src.enums.pattern_type_enum import PatternTypeEnum
 
+GITHUB_URL_PREFIX = 'https://github.com'
+
 
 class IngestRequestValidator(BaseModel):
     model_config = ConfigDict(extra="forbid")
@@ -19,9 +21,15 @@ class IngestRequestValidator(BaseModel):
         if not value:
             raise ValueError('O campo `path` é obrigatório.')
 
+        if value.startswith(GITHUB_URL_PREFIX):
+            return value
+
         path = PureWindowsPath(value)
 
         if not path.drive:
-            raise ValueError('O caminho deve iniciar com uma unidade válida (ex.: C:\\).')
+            raise ValueError(
+                'O caminho deve iniciar com uma unidade válida (ex.: C:\\) '
+                'ou uma URL do GitHub (ex.: https://github.com/owner/repo).)'
+            )
 
         return value
