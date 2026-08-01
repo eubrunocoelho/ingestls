@@ -1,3 +1,3 @@
-class GitHubApiException(Exception):
+class GitHubAPIException(Exception):
     def __init__(self, message: str):
         super().__init__(message)

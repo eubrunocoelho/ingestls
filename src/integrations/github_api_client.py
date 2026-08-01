@@ -1,6 +1,6 @@
 import requests
 
-from src.exceptions.github_api_exception import GitHubApiException
+from src.exceptions.github_api_exception import GitHubAPIException
 from src.integrations.github_client import GitHubClient
 
 GITHUB_API_BASE_URL = 'https://api.github.com'
@@ -21,7 +21,7 @@ class GitHubAPIClient(GitHubClient):
                 timeout=self.timeout,
             )
         except requests.RequestException as error:
-            raise GitHubApiException(
+            raise GitHubAPIException(
                 f'Falha ao conectar com a API do GitHub: {error}'
             ) from error
 
@@ -31,7 +31,7 @@ class GitHubAPIClient(GitHubClient):
         if response.status_code == 404:
             return False
 
-        raise GitHubApiException(
+        raise GitHubAPIException(
             f'Resposta inesperada da API do GitHub ({response.status_code}) '
             f'para {owner}/{repo}'
         )
