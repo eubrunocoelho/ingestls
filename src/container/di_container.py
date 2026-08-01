@@ -1,3 +1,4 @@
+from src.filesystem.file_inspector import FileInspector
 from src.filters.factories.locator_factory import LocatorFactory
 from src.filters.factories.matcher_factory import MatcherFactory
 from src.filters.tree_filter import TreeFilter
@@ -42,7 +43,11 @@ pattern_set_processor = PatternSetProcessor(
 
 windows_directory_scanner = WindowsDirectoryScanner()
 
-windows_file_reader = WindowsFileReader()
+file_inspector = FileInspector()
+
+windows_file_reader = WindowsFileReader(
+    file_inspector
+)
 
 directory_tree_renderer = DirectoryTreeRenderer()
 

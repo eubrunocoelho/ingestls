@@ -12,6 +12,11 @@ from src.strategies.ingest_strategy import IngestStrategy
 
 
 class WindowsIngestStrategy(IngestStrategy):
+    _STRATEGY_BY_PATTERN_TYPE = {
+        PatternTypeEnum.INCLUDE: 'include',
+        PatternTypeEnum.EXCLUDE: 'exclude',
+    }
+
     def __init__(
             self,
             pattern_set_processor: PatternSetProcessor,
@@ -25,11 +30,6 @@ class WindowsIngestStrategy(IngestStrategy):
         self.directory_scanner = directory_scanner
         self.directory_tree_renderer = directory_tree_renderer
         self.file_reader = file_reader
-
-    _STRATEGY_BY_PATTERN_TYPE = {
-        PatternTypeEnum.INCLUDE: 'include',
-        PatternTypeEnum.EXCLUDE: 'exclude',
-    }
 
     def supports(self, dto: IngestRequestDTO) -> bool:
         return bool(Path(dto.path).drive)

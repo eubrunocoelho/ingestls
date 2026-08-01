@@ -111,9 +111,6 @@ class TreeFilter:
             current_path: str,
             compiled_patterns: list[CompiledPatternDTO],
     ) -> bool:
-        # Filtra `node.children` in-place, mantendo só o que bate em algum padrão (arquivos)
-        # ou contém algo que bate (diretórios). Retorna `True` se `node` deve ser mantido pelo
-        # pai (batou direto ou sobrou algo dentro dele)
         kept_children: list[DirectoryNode] = []
 
         for child in node.children:
@@ -127,8 +124,6 @@ class TreeFilter:
 
             if child.is_directory:
                 if matched:
-                    # Padrão de diretório beteu direto: mantém a subárvore
-                    # intera, sem filtrar recursivamente por dentro.
                     kept_children.append(child)
                     continue
 

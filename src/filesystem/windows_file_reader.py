@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from src.filesystem.directory_node import DirectoryNode
+from src.filesystem.file_inspector import FileInspector
 from src.filesystem.file_reader import FileReader
 
 
@@ -11,6 +12,12 @@ class WindowsFileReader(FileReader):
         'DIRECTORY: {directory}\n'
         '================================================'
     )
+
+    _BINARY_FILE_FLAG = '[Binary File]'
+    _EMPTY_FILE_FLAG = '[Empty File]'
+
+    def __init__(self, file_inspector: FileInspector):
+        self.file_inspector = file_inspector
 
     def read(self, tree: DirectoryNode) -> str:
         contents: list[str] = []
@@ -40,4 +47,14 @@ class WindowsFileReader(FileReader):
                 filename=child.name,
                 directory=directory_display,
             ))
-            contents.append(file_path.read_text(encoding='utf-8'))
+
+            contents.append(self._get_file_content(file_path))
+
+    def _get_file_content(self, file_path: Path) -> str:
+        if self.file_inspector.is_empty(file_path):
+            return self._EMPTY_FILE_FLAG
+
+        if self.file_inspector.is_binary(file_path):
+            return self._BINARY_FILE_FLAG
+
+        return file_path.read_text(encoding='utf-8')
