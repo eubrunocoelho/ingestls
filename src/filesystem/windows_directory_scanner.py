@@ -12,6 +12,7 @@ class WindowsDirectoryScanner(DirectoryScanner):
         node = DirectoryNode(
             name=root.name if root.name else str(root),
             is_directory=root.is_dir(),
+            path=str(root),
         )
 
         if not root.is_dir():
