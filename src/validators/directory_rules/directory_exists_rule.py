@@ -7,6 +7,9 @@ from src.validators.directory_rules.ingest_rule import IngestRule
 
 
 class DirectoryExistsRule(IngestRule):
+    def supports(self, dto: IngestRequestDTO) -> bool:
+        return bool(Path(dto.path).drive)
+
     def validate(self, dto: IngestRequestDTO) -> None:
         path = Path(dto.path)
 

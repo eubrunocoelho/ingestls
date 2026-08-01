@@ -8,4 +8,5 @@ class IngestDirectoryValidator:
 
     def validate(self, dto: IngestRequestDTO) -> None:
         for rule in self.rules:
-            rule.validate(dto)
+            if rule.supports(dto):
+                rule.validate(dto)
