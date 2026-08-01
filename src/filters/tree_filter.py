@@ -34,6 +34,9 @@ class TreeFilter:
             root: DirectoryNode,
             patterns: list[PatternDTO],
     ) -> DirectoryNode:
+        if not patterns:
+            return root
+
         compiled_patterns = self._compile(patterns)
 
         self._filter_include(

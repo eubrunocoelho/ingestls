@@ -251,3 +251,161 @@ def test_exclude_does_not_mutate_unrelated_siblings(tree_filter):
     assert 'cache.php' not in [child.name for child in app_node.children]
     assert 'cache.php' in [child.name for child in other_node.children]
     assert 'cache.php' in [child.name for child in deep_node.children]
+
+
+# Tudo que deve sobrar após o `include` com os mesmos 6 padrões do `ticket`:
+# só o que bate (todo `.php` e as DUAS subárvores `vendor` inteiras). Qualquer
+# diretório que não bate e não tem nenhum descendente que bate é podado
+# (`docs/` e `public/assets` somem por completo)
+EXPECTED_INCLUDED_ENTRIES: dict[str, bool] = {
+    'app': True,
+    'app/Http': True,
+    'app/Http/Controllers': True,
+    'app/Http/Controllers/Controller.php': False,
+    'app/Http/Middleware': True,
+    'app/Http/Middleware/HandleInertiaRequests.php': False,
+    'app/Models': True,
+    'app/Models/User.php': False,
+    'app/Providers': True,
+    'app/Providers/AppServiceProvider.php': False,
+    'app/vendor': True,
+    'app/vendor/autoload.php': False,
+    'app/cache.php': False,
+    'nested': True,
+    'nested/deep': True,
+    'nested/deep/cache.php': False,
+    'other': True,
+    'other/cache.php': False,
+    'public': True,
+    'public/index.php': False,
+    'vendor': True,
+    'vendor/package': True,
+    'vendor/package/loader.php': False,
+    'index.php': False,
+}
+
+
+def test_include_keeps_only_matched_php_files_and_both_vendor_subtrees(tree_filter):
+    tree = _build_sample_project_tree()
+    patterns = _ticket_patterns()
+
+    result = tree_filter.include(root=tree, patterns=patterns)
+
+    assert _flatten(result) == EXPECTED_INCLUDED_ENTRIES
+
+
+def test_include_prunes_directory_with_no_matching_descendants_entirely(tree_filter):
+    # `docs` só tem `readme.md`, que não bate em nenhum padrão - o diretório inteiro
+    # deve sumir da árvore, não só ficar vazio.
+    tree = _build_sample_project_tree()
+
+    result = tree_filter.include(root=tree, patterns=_ticket_patterns())
+
+    names = [child.name for child in result.children]
+    assert 'docs' not in names
+
+
+def test_include_prunes_nested_directory_with_no_matching_descendants(tree_filter):
+    # `public/asserts` só tem style.css - deve sumir, mas `public` permanece
+    # porque `public/index.php` bate.
+    tree = _build_sample_project_tree()
+
+    result = tree_filter.include(root=tree, patterns=_ticket_patterns())
+
+    public_node = next(child for child in result.children if child.name == 'public')
+    names = [child.name for child in public_node.children]
+
+    assert 'assets' not in names
+    assert 'index.php' in names
+
+
+def test_include_keeps_root_level_file_matching_extension_and_filename_patterns(tree_filter):
+    tree = _build_sample_project_tree()
+
+    result = tree_filter.include(root=tree, patterns=_ticket_patterns())
+
+    names = [child.name for child in result.children]
+    assert 'index.php' in names
+
+
+def test_include_with_no_patterns_returns_tree_unchanged(tree_filter):
+    # Sem nenhum padrãoo de `include`, nada é filtrado - convenção simétrica
+    # ao `exclude():` lista vazia de `patterns` significa "não filtrar nada",
+    # não "esconder tudo".
+    tree = _build_sample_project_tree()
+    original_flat = _flatten(tree)
+
+    result = tree_filter.include(root=tree, patterns=[])
+
+    assert _flatten(result) == original_flat
+    assert result is tree
+
+
+def test_include_directory_pattern_keeps_entire_subtree_even_non_matching_files(tree_filter):
+    # Quando um padrão `DIRECTORY` bate direto num diretório, o `include` mantém
+    # a subárvore INTEIRA sem filtrar por dentro - mesmo um arquivo que não bateria sozinho
+    # (README, sem extensão) permanece.
+    tree = _dir(
+        'root',
+        [
+            _dir(
+                'vendor',
+                [
+                    _file('autoload.php'),
+                    _file('README'),
+                ]),
+        ])
+    patterns = [
+        PatternDTO(
+            pattern='vendor/',
+            value='vendor',
+            kind=PatternKindEnum.DIRECTORY,
+            scope=PatternScopeEnum.GLOBAL,
+        )
+    ]
+
+    result = tree_filter.include(root=tree, patterns=patterns)
+
+    vendor_node = next(child for child in result.children if child.name == 'vendor')
+    assert [child.name for child in vendor_node.children] == ['autoload.php', 'README']
+
+
+def test_include_without_directory_pattern_recurses_and_prunes_non_matching_files(tree_filter):
+    # Mesma árvore do teste acima, mas SEM padrão de diretório - agora `include`
+    # recusa por dentro de `vendor` e pode o que não bate.
+    tree = _dir(
+        'root',
+        [
+            _dir(
+                'vendor',
+                [
+                    _file('autoload.php'),
+                    _file('README'),
+                ]),
+        ])
+    patterns = [
+        PatternDTO(
+            pattern='*.php',
+            value='.php',
+            kind=PatternKindEnum.EXTENSION,
+            scope=PatternScopeEnum.GLOBAL,
+        )
+    ]
+
+    result = tree_filter.include(root=tree, patterns=patterns)
+
+    vendor_node = next(child for child in result.children if child.name == 'vendor')
+    assert [child.name for child in vendor_node.children] == ['autoload.php']
+
+
+def test_include_does_not_mutate_the_original_pattern_list_or_tree_structure(tree_filter):
+    # Regressão simples: o objeto `root` retornado e o mesmo objeto passado
+    # (mutação in-place), e `patterns` não é alterado.
+    tree = _build_sample_project_tree()
+    patterns = _ticket_patterns()
+    patterns_snapshot = list(patterns)
+
+    result = tree_filter.include(root=tree, patterns=patterns)
+
+    assert result is tree
+    assert patterns == patterns_snapshot
