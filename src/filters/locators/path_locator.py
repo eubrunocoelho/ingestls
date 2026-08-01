@@ -1,3 +1,5 @@
+from dataclasses import replace
+
 from src.dtos.pattern_dto import PatternDTO
 from src.filesystem.directory_node import DirectoryNode
 from src.filters.locators.locator import Locator
@@ -15,7 +17,9 @@ class PathLocator(Locator):
         if current_path != pattern.value:
             return False
 
+        local_pattern = replace(pattern, value=node.name)
+
         return matcher.matches(
             node,
-            pattern,
+            local_pattern,
         )

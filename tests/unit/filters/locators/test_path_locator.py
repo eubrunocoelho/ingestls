@@ -1,5 +1,7 @@
 import pytest
 
+from dataclasses import replace
+
 from src.enums.pattern_kind_enum import PatternKindEnum
 from src.enums.pattern_scope_enum import PatternScopeEnum
 from src.filters.locators.path_locator import PathLocator
@@ -47,7 +49,9 @@ def test_delegates_to_matcher_when_current_path_matches_exactly(locator, pattern
     )
 
     assert result is True
-    assert matcher.calls == [(node, pattern)]
+
+    expected_pattern = replace(pattern, value=node.name)
+    assert matcher.calls == [(node, expected_pattern)]
 
 
 def test_short_circuits_without_calling_matcher_when_path_differs(locator, pattern):
