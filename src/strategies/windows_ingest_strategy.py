@@ -57,6 +57,6 @@ class WindowsIngestStrategy(IngestStrategy):
 
         directory_structure = self.directory_tree_renderer.render_tree(directory_tree)
 
-        file_content = self.file_reader.read(root)
+        file_content = self.file_reader.read(directory_tree)
 
         return IngestResponseDTO(directory_structure, file_content)

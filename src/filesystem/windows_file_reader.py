@@ -1,30 +1,43 @@
 from pathlib import Path
 
+from src.filesystem.directory_node import DirectoryNode
 from src.filesystem.file_reader import FileReader
-
-FILE_INFO = (
-    '================================================\n'
-    'FILE: {filename}\n'
-    'DIRECTORY: {directory}\n'
-    '================================================'
-)
 
 
 class WindowsFileReader(FileReader):
-    def read(self, root: Path) -> str:
-        contents = []
+    _FILE_INFO = (
+        '================================================\n'
+        'FILE: {filename}\n'
+        'DIRECTORY: {directory}\n'
+        '================================================'
+    )
 
-        for file in root.rglob('*'):
-            if file.is_file():
-                contents.append(FILE_INFO.format(
-                    filename=file.name,
-                    directory=file.parent.relative_to(root),
-                ))
+    def read(self, tree: DirectoryNode) -> str:
+        contents: list[str] = []
+        root_path = Path(tree.path)
 
-                contents.append(
-                    file.read_text(
-                        encoding='utf-8',
-                    )
-                )
+        self._collect(tree, root_path, contents)
 
         return '\n'.join(contents)
+
+    def _collect(
+            self,
+            node: DirectoryNode,
+            root_path: Path,
+            contents: list[str],
+    ) -> None:
+        for child in node.children:
+            if child.is_directory:
+                self._collect(child, root_path, contents)
+
+                continue
+
+            file_path = Path(child.path)
+            directory = file_path.parent.relative_to(root_path)
+            directory_display = './' if str(directory) == '.' else str(directory)
+
+            contents.append(self._FILE_INFO.format(
+                filename=child.name,
+                directory=directory_display,
+            ))
+            contents.append(file_path.read_text(encoding='utf-8'))

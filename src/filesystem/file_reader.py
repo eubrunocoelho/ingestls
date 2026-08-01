@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
-from pathlib import Path
+
+from src.filesystem.directory_node import DirectoryNode
+
 
 class FileReader(ABC):
     @abstractmethod
-    def read(self, root: Path) -> str:
+    def read(self, tree: DirectoryNode) -> str:
         pass
