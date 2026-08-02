@@ -36,7 +36,7 @@ class WindowsIngestStrategy(IngestStrategy):
 
     def ingest(self, dto: IngestRequestDTO) -> IngestResponseDTO:
         pattern = self.pattern_set_processor.process(
-            dto.pattern
+            dto.pattern,
         )
 
         root = Path(dto.path)

@@ -15,3 +15,7 @@ class GitHubClient(ABC):
     @abstractmethod
     def get_repository_tree(self, owner: str, repo: str, branch: str) -> list[GitHubTreeItemDTO]:
         pass
+
+    @abstractmethod
+    def get_blob_content(self, owner: str, repo: str, sha: str) -> bytes:
+        pass

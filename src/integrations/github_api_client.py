@@ -1,4 +1,5 @@
 import requests
+import base64
 
 from src.dtos.github_tree_item_dto import GitHubTreeItemDTO
 from src.exceptions.github_api_exception import GitHubAPIException
@@ -65,6 +66,17 @@ class GitHubAPIClient(GitHubClient):
             for item in payload.get('tree', [])
             if item['type'] in ('blob', 'tree')
         ]
+
+    def get_blob_content(self, owner: str, repo: str, sha: str) -> bytes:
+        response = self._get(f'{GITHUB_API_BASE_URL}/repos/{owner}/{repo}/git/blobs/{sha}')
+        payload = response.json()
+
+        if payload.get('encoding') != 'base64':
+            raise GitHubAPIException(
+                f'Encoding inesperado ({payload.get("encoding")}) para o blob {sha}'
+            )
+
+        return base64.b64decode(payload['content'])
 
     def _get(self, url: str, params: dict | None = None) -> requests.Response:
         try:

@@ -30,6 +30,7 @@ class GitHubDirectoryScanner:
             name=name,
             is_directory=item.type == 'tree',
             path=item.path,
+            sha=item.sha,
         )
 
         parent.children.append(node)

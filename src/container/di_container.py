@@ -1,7 +1,9 @@
 import os
 
+from src.filesystem.content_inspector import ContentInspector
 from src.filesystem.file_inspector import FileInspector
 from src.filesystem.github_directory_scanner import GitHubDirectoryScanner
+from src.filesystem.github_file_reader import GitHubFileReader
 from src.filters.factories.locator_factory import LocatorFactory
 from src.filters.factories.matcher_factory import MatcherFactory
 from src.filters.tree_filter import TreeFilter
@@ -49,13 +51,7 @@ windows_file_reader = WindowsFileReader(
     FileInspector()
 )
 
-windows_ingest_strategy = WindowsIngestStrategy(
-    pattern_set_processor,
-    tree_filter,
-    WindowsDirectoryScanner(),
-    DirectoryTreeRenderer(),
-    windows_file_reader,
-)
+directory_tree_renderer = DirectoryTreeRenderer()
 
 github_client = GitHubAPIClient(token=os.environ.get('GITHUB_TOKEN'))
 
@@ -63,8 +59,25 @@ github_directory_scanner = GitHubDirectoryScanner(
     github_client,
 )
 
+github_file_reader = GitHubFileReader(
+    github_client,
+    ContentInspector(),
+)
+
+windows_ingest_strategy = WindowsIngestStrategy(
+    pattern_set_processor,
+    tree_filter,
+    WindowsDirectoryScanner(),
+    directory_tree_renderer,
+    windows_file_reader,
+)
+
 github_ingest_strategy = GitHubIngestStrategy(
+    pattern_set_processor,
+    tree_filter,
     github_directory_scanner,
+    directory_tree_renderer,
+    github_file_reader,
 )
 
 ingest_dispatcher = IngestDispatcher(
