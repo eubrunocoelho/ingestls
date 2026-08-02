@@ -1,6 +1,7 @@
 import os
 
 from src.filesystem.file_inspector import FileInspector
+from src.filesystem.github_directory_scanner import GitHubDirectoryScanner
 from src.filters.factories.locator_factory import LocatorFactory
 from src.filters.factories.matcher_factory import MatcherFactory
 from src.filters.tree_filter import TreeFilter
@@ -56,14 +57,21 @@ windows_ingest_strategy = WindowsIngestStrategy(
     windows_file_reader,
 )
 
-github_ingest_strategy = GitHubIngestStrategy()
+github_client = GitHubAPIClient(token=os.environ.get('GITHUB_TOKEN'))
+
+github_directory_scanner = GitHubDirectoryScanner(
+    github_client,
+)
+
+github_ingest_strategy = GitHubIngestStrategy(
+    github_directory_scanner,
+)
 
 ingest_dispatcher = IngestDispatcher(
     windows_ingest_strategy,
     github_ingest_strategy,
 )
 
-github_client = GitHubAPIClient(token=os.environ.get('GITHUB_TOKEN'))
 github_repository_exists_rule = GitHubRepositoryExistsRule(
     github_client,
 )
