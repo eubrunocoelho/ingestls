@@ -1,8 +1,13 @@
+import logging
+
 from flask import jsonify, Flask, Response
 from pydantic import ValidationError
 
-from src.exceptions.business_exception import BusinessException
+from src.exceptions.base.business_exception import BusinessException
+from src.exceptions.base.infrastructure_exception import InfrastructureException
 from src.responses.validation_error_response import ValidationErrorResponse
+
+logger = logging.getLogger(__name__)
 
 
 class GlobalExceptionHandler:
@@ -16,6 +21,16 @@ class GlobalExceptionHandler:
         app.register_error_handler(
             BusinessException,
             GlobalExceptionHandler.handle_business_exception,
+        )
+
+        app.register_error_handler(
+            InfrastructureException,
+            GlobalExceptionHandler.handle_infrastructure_exception,
+        )
+
+        app.register_error_handler(
+            Exception,
+            GlobalExceptionHandler.handle_unexpected_exception,
         )
 
     @staticmethod
@@ -33,3 +48,23 @@ class GlobalExceptionHandler:
         return jsonify({
             'message': str(e),
         }), e.status_code
+
+    @staticmethod
+    def handle_infrastructure_exception(
+            e: InfrastructureException,
+    ) -> tuple[Response, int]:
+        logger.exception(e)
+
+        return jsonify({
+            'message': 'Ocorreu um erro interno durante o processamento da solicitação.',
+        }), e.status_code
+
+    @staticmethod
+    def handle_unexpected_exception(
+            e: Exception,
+    ) -> tuple[Response, int]:
+        logger.exception(e)
+
+        return jsonify({
+            'message': 'Ocorreu um erro inesperado.',
+        }), 500

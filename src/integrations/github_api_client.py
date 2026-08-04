@@ -2,7 +2,9 @@ import requests
 import base64
 
 from src.dtos.github_tree_item_dto import GitHubTreeItemDTO
-from src.exceptions.github_api_exception import GitHubAPIException
+
+from src.exceptions.filesystem.repository_access_exception import RepositoryAccessException
+from src.exceptions.github.github_api_exception import GitHubAPIException
 from src.integrations.github_client import GitHubClient
 
 GITHUB_API_BASE_URL = 'https://api.github.com'
@@ -22,7 +24,7 @@ class GitHubAPIClient(GitHubClient):
                 timeout=self.timeout,
             )
         except requests.RequestException as error:
-            raise GitHubAPIException(
+            raise RepositoryAccessException(
                 f'Falha ao conectar com a API do GitHub: {error}'
             ) from error
 

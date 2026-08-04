@@ -1,7 +1,7 @@
 from typing import Any
 
 from src.dtos.ingest_request_dto import IngestRequestDTO
-from src.exceptions.invalid_github_url_exception import InvalidGitHubURLException
+from src.exceptions.github.invalid_github_url_exception import InvalidGitHubURLException
 from src.filesystem.directory_node import DirectoryNode
 from src.filesystem.directory_tree_renderer import DirectoryTreeRenderer
 from src.filesystem.github_directory_scanner import GitHubDirectoryScanner

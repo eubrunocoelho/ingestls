@@ -1,5 +1,5 @@
 from src.dtos.ingest_request_dto import IngestRequestDTO
-from src.exceptions.github_repository_not_found_exception import GitHubRepositoryNotFoundException
+from src.exceptions.github.github_repository_not_found_exception import GitHubRepositoryNotFoundException
 from src.integrations.github_client import GitHubClient
 from src.validators.directory_rules.github_url_format_rule import GITHUB_URL_PATTERN, GITHUB_URL_PREFIX
 from src.validators.directory_rules.ingest_rule import IngestRule
