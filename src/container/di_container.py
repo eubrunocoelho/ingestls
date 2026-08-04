@@ -47,8 +47,14 @@ tree_filter = TreeFilter(
     MatcherFactory()
 )
 
+content_inspector = ContentInspector()
+
+file_inspector = FileInspector(
+    content_inspector,
+)
+
 windows_file_reader = WindowsFileReader(
-    FileInspector()
+    file_inspector,
 )
 
 directory_tree_renderer = DirectoryTreeRenderer()
@@ -61,7 +67,7 @@ github_directory_scanner = GitHubDirectoryScanner(
 
 github_file_reader = GitHubFileReader(
     github_client,
-    ContentInspector(),
+    content_inspector,
 )
 
 windows_ingest_strategy = WindowsIngestStrategy(

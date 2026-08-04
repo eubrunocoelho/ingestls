@@ -29,7 +29,7 @@ class IngestRequestValidator(BaseModel):
         if not path.drive:
             raise ValueError(
                 'O caminho deve iniciar com uma unidade válida (ex.: C:\\) '
-                'ou uma URL do GitHub (ex.: https://github.com/owner/repo).)'
+                'ou uma URL do GitHub (ex.: https://github.com/owner/repo/).'
             )
 
         return value
