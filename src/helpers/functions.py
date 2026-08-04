@@ -1,11 +1,9 @@
-from pprint import pprint
-import sys
 import builtins
 
-
-def dd(value):
-    pprint(value)
-    sys.exit()
+from src.exceptions.dump.debug_exception import DumpException
 
 
-builtins.dd = dd
+def debug(value):
+    raise DumpException(value)
+
+builtins.debug = debug
