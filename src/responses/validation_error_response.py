@@ -12,7 +12,7 @@ ERROR_MESSAGES: dict[str, str] = {
 }
 
 
-@dataclass(slots=True)
+@dataclass(frozen=True, slots=True)
 class ValidationErrorResponse:
     errors: list[ValidationErrorItemDTO] = field(default_factory=list)
 
