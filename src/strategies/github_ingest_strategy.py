@@ -1,21 +1,16 @@
 from src.dtos.ingest_request_dto import IngestRequestDTO
 from src.dtos.ingest_response_dto import IngestResponseDTO
-from src.enums.pattern_type_enum import PatternTypeEnum
 from src.filesystem.directory_tree_renderer import DirectoryTreeRenderer
 from src.filesystem.github_directory_scanner import GitHubDirectoryScanner
 from src.filesystem.github_file_reader import GitHubFileReader
 from src.filters.tree_filter import TreeFilter
+from src.integrations.github_constants import GITHUB_URL_PREFIX, GITHUB_URL_PATTERN
 from src.processors.pattern_set_processor import PatternSetProcessor
 from src.strategies.ingest_strategy import IngestStrategy
-from src.validators.directory_rules.github_url_format_rule import GITHUB_URL_PATTERN
+from src.strategies.pattern_type_dispatch import STRATEGY_METHOD_BY_PATTERN_TYPE
 
 
 class GitHubIngestStrategy(IngestStrategy):
-    _STRATEGY_BY_PATTERN_TYPE = {
-        PatternTypeEnum.INCLUDE: 'include',
-        PatternTypeEnum.EXCLUDE: 'exclude',
-    }
-
     def __init__(
             self,
             pattern_set_processor: PatternSetProcessor,
@@ -31,7 +26,7 @@ class GitHubIngestStrategy(IngestStrategy):
         self.file_reader = file_reader
 
     def supports(self, dto: IngestRequestDTO) -> bool:
-        return dto.path.startswith('https://github.com/')
+        return dto.path.startswith(GITHUB_URL_PREFIX)
 
     def ingest(self, dto: IngestRequestDTO) -> IngestResponseDTO:
         pattern = self.pattern_set_processor.process(
@@ -43,7 +38,7 @@ class GitHubIngestStrategy(IngestStrategy):
 
         directory_tree = self.directory_scanner.read(owner, repo)
 
-        method_name = self._STRATEGY_BY_PATTERN_TYPE.get(
+        method_name = STRATEGY_METHOD_BY_PATTERN_TYPE.get(
             dto.pattern_type, 'exclude'
         )
         method = getattr(self.tree_filter, method_name)

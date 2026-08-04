@@ -1,19 +1,10 @@
 from src.filesystem.content_inspector import ContentInspector
+from src.filesystem.digest_format import BINARY_FILE_FLAG, EMPTY_FILE_FLAG, FILE_INFO
 from src.filesystem.directory_node import DirectoryNode
 from src.integrations.github_client import GitHubClient
 
 
 class GitHubFileReader:
-    _FILE_INFO = (
-        '================================================\n'
-        'FILE: {filename}\n'
-        'DIRECTORY: {directory}\n'
-        '================================================'
-    )
-
-    _BINARY_FILE_FLAG = '[Binary File]'
-    _EMPTY_FILE_FLAG = '[Empty File]'
-
     def __init__(
             self,
             github_client: GitHubClient,
@@ -50,7 +41,7 @@ class GitHubFileReader:
             directory, _, _ = child.path.rpartition('/')
             directory_display = './' if not directory else directory
 
-            contents.append(self._FILE_INFO.format(
+            contents.append(FILE_INFO.format(
                 filename=child.name,
                 directory=directory_display,
             ))
@@ -66,9 +57,9 @@ class GitHubFileReader:
         raw_content = self.github_client.get_blob_content(owner, repo, node.sha)
 
         if self.content_inspector.is_empty(raw_content):
-            return self._EMPTY_FILE_FLAG
+            return EMPTY_FILE_FLAG
 
         if self.content_inspector.is_binary(raw_content):
-            return self._BINARY_FILE_FLAG
+            return BINARY_FILE_FLAG
 
         return raw_content.decode('utf-8')

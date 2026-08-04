@@ -1,9 +1,8 @@
 from pathlib import PureWindowsPath
 from pydantic import BaseModel, ConfigDict, field_validator
 
+from src.integrations.github_constants import GITHUB_URL_PREFIX
 from src.enums.pattern_type_enum import PatternTypeEnum
-
-GITHUB_URL_PREFIX = 'https://github.com'
 
 
 class IngestRequestValidator(BaseModel):
@@ -29,7 +28,7 @@ class IngestRequestValidator(BaseModel):
         if not path.drive:
             raise ValueError(
                 'O caminho deve iniciar com uma unidade válida (ex.: C:\\) '
-                'ou uma URL do GitHub (ex.: https://github.com/owner/repo/).'
+                'ou uma URL do GitHub (ex.: https://github.com/owner/repo).'
             )
 
         return value

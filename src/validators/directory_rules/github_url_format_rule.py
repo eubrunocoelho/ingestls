@@ -2,16 +2,13 @@ import re
 
 from src.dtos.ingest_request_dto import IngestRequestDTO
 from src.exceptions.invalid_github_url_exception import InvalidGitHubURLException
+from src.integrations.github_constants import GITHUB_URL_PATTERN, GITHUB_URL_PREFIX
 from src.validators.directory_rules.ingest_rule import IngestRule
-
-GITHUB_URL_PATTERN = re.compile(
-    r'^https://github\.com/(?P<owner>[\w.-]+)/(?P<repo>[\w.-]+)/?$'
-)
 
 
 class GitHubURLFormatRule(IngestRule):
     def supports(self, dto: IngestRequestDTO) -> bool:
-        return dto.path.startswith('https://github.com/')
+        return dto.path.startswith(GITHUB_URL_PREFIX)
 
     def validate(self, dto: IngestRequestDTO) -> None:
         if GITHUB_URL_PATTERN.match(dto.path) is None:
