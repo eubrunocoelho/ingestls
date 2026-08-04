@@ -2,10 +2,9 @@ from pathlib import Path
 
 from src.filesystem.directory_node import DirectoryNode
 from src.filesystem.file_inspector import FileInspector
-from src.filesystem.file_reader import FileReader
 
 
-class WindowsFileReader(FileReader):
+class WindowsFileReader:
     _FILE_INFO = (
         '================================================\n'
         'FILE: {filename}\n'

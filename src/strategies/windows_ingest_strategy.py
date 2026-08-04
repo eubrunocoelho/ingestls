@@ -1,11 +1,11 @@
 from pathlib import Path
 
 from src.enums.pattern_type_enum import PatternTypeEnum
+from src.filesystem.windows_directory_scanner import WindowsDirectoryScanner
+from src.filesystem.windows_file_reader import WindowsFileReader
 from src.filters.tree_filter import TreeFilter
 from src.processors.pattern_set_processor import PatternSetProcessor
 from src.filesystem.directory_tree_renderer import DirectoryTreeRenderer
-from src.filesystem.file_reader import FileReader
-from src.filesystem.directory_scanner import DirectoryScanner
 from src.dtos.ingest_response_dto import IngestResponseDTO
 from src.dtos.ingest_request_dto import IngestRequestDTO
 from src.strategies.ingest_strategy import IngestStrategy
@@ -21,9 +21,9 @@ class WindowsIngestStrategy(IngestStrategy):
             self,
             pattern_set_processor: PatternSetProcessor,
             tree_filter: TreeFilter,
-            directory_scanner: DirectoryScanner,
+            directory_scanner: WindowsDirectoryScanner,
             directory_tree_renderer: DirectoryTreeRenderer,
-            file_reader: FileReader,
+            file_reader: WindowsFileReader,
     ):
         self.pattern_set_processor = pattern_set_processor
         self.tree_filter = tree_filter
