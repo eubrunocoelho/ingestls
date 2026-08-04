@@ -1,5 +1,8 @@
+from typing import Any
+
 from src.dtos.ingest_request_dto import IngestRequestDTO
-from src.dtos.ingest_response_dto import IngestResponseDTO
+from src.exceptions.invalid_github_url_exception import InvalidGitHubURLException
+from src.filesystem.directory_node import DirectoryNode
 from src.filesystem.directory_tree_renderer import DirectoryTreeRenderer
 from src.filesystem.github_directory_scanner import GitHubDirectoryScanner
 from src.filesystem.github_file_reader import GitHubFileReader
@@ -7,7 +10,6 @@ from src.filters.tree_filter import TreeFilter
 from src.integrations.github_constants import GITHUB_URL_PREFIX, GITHUB_URL_PATTERN
 from src.processors.pattern_set_processor import PatternSetProcessor
 from src.strategies.ingest_strategy import IngestStrategy
-from src.strategies.pattern_type_dispatch import STRATEGY_METHOD_BY_PATTERN_TYPE
 
 
 class GitHubIngestStrategy(IngestStrategy):
@@ -19,37 +21,27 @@ class GitHubIngestStrategy(IngestStrategy):
             directory_tree_renderer: DirectoryTreeRenderer,
             file_reader: GitHubFileReader,
     ):
-        self.pattern_set_processor = pattern_set_processor
-        self.tree_filter = tree_filter
+        super().__init__(pattern_set_processor, tree_filter, directory_tree_renderer)
         self.directory_scanner = directory_scanner
-        self.directory_tree_renderer = directory_tree_renderer
         self.file_reader = file_reader
 
     def supports(self, dto: IngestRequestDTO) -> bool:
         return dto.path.startswith(GITHUB_URL_PREFIX)
 
-    def ingest(self, dto: IngestRequestDTO) -> IngestResponseDTO:
-        pattern = self.pattern_set_processor.process(
-            dto.pattern,
-        )
-
+    def _resolve_target(self, dto: IngestRequestDTO) -> tuple[str, str]:
         match = GITHUB_URL_PATTERN.match(dto.path.rstrip('/'))
-        owner, repo = match.group('owner'), match.group('repo')
 
-        directory_tree = self.directory_scanner.read(owner, repo)
+        if match is None:
+            raise InvalidGitHubURLException(dto.path)
 
-        method_name = STRATEGY_METHOD_BY_PATTERN_TYPE.get(
-            dto.pattern_type, 'exclude'
-        )
-        method = getattr(self.tree_filter, method_name)
+        return match.group('owner'), match.group('repo')
 
-        directory_tree = method(
-            root=directory_tree,
-            patterns=pattern,
-        )
+    def _scan(self, target: tuple[str, str]) -> DirectoryNode:
+        owner, repo = target
 
-        directory_structure = self.directory_tree_renderer.render_tree(directory_tree)
+        return self.directory_scanner.read(owner, repo)
 
-        file_content = self.file_reader.read(directory_tree, owner, repo)
+    def _read_files(self, target: Any, directory_tree: DirectoryNode) -> str:
+        owner, repo = target
 
-        return IngestResponseDTO(directory_structure, file_content)
+        return self.file_reader.read(directory_tree, owner, repo)
