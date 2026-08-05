@@ -1,5 +1,3 @@
-import os
-
 from src.filesystem.content_inspector import ContentInspector
 from src.filesystem.file_inspector import FileInspector
 from src.filesystem.github_directory_scanner import GitHubDirectoryScanner
@@ -13,6 +11,7 @@ from src.filesystem.windows_file_reader import WindowsFileReader
 from src.dispatchers.ingest_dispatcher import IngestDispatcher
 from src.controllers.ingest_controller import IngestController
 from src.integrations.github_api_client import GitHubAPIClient
+from src.integrations.github_http_client import GitHubHTTPClient
 from src.services.ingest_service import IngestService
 from src.strategies.github_ingest_strategy import GitHubIngestStrategy
 from src.validators.directory_rules.directory_exists_rule import DirectoryExistsRule
@@ -59,7 +58,11 @@ windows_file_reader = WindowsFileReader(
 
 directory_tree_renderer = DirectoryTreeRenderer()
 
-github_client = GitHubAPIClient(token=os.environ.get('GITHUB_TOKEN'))
+github_http_client = GitHubHTTPClient()
+
+github_client = GitHubAPIClient(
+    github_http_client,
+)
 
 github_directory_scanner = GitHubDirectoryScanner(
     github_client,
