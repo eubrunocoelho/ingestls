@@ -12,6 +12,7 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
+    <script type="module" src="/assets/js/app.js"></script>
   </head>
   <body>
     <header class="header u-fluid-padding">
@@ -50,20 +51,22 @@
         seu projeto como insumo de contexto para LLMs.
       </p>
       <section class="main__section">
-        <form action="" class="section__form">
+        <form class="section__form" id="ingest-form">
           <div class="section-form__column">
             <input
               type="text"
+              id="path"
+              name="path"
               class="section-form__input-text"
               placeholder="URL ou Diretório"
             />
-            <button type="button" value="" class="section-form__input-button" />
+            <button type="button" class="section-form__input-button"></button>
           </div>
           <div class="section-form__grid">
             <div class="section-form__select-wrapper">
-              <select class="section-form__select">
-                <option selected>Excluir</option>
-                <option>Incluir</option>
+              <select id="pattern-type" name="pattern-type" class="section-form__select">
+                <option value="exclude" selected>Excluir</option>
+                <option value="include">Incluir</option>
               </select>
               <span class="section-form__select-icon">
                 <i class="fa-solid fa-caret-down"></i>
@@ -71,6 +74,8 @@
             </div>
             <input
               type="text"
+              id="pattern"
+              name="pattern"
               class="section-form__input-text"
               placeholder="*.md, node_modules/, .env"
             />
