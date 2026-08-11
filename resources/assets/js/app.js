@@ -1,18 +1,12 @@
 const form = document.querySelector('#ingest-form')
 
 const outputElement = document.querySelector('#output');
+const loadingElement = document.querySelector('.loading-wrapper');
+const outputWrapperElement = document.querySelector('.output-wrapper');
 
-const summaryElement = document.querySelector(
-    '#result-summary',
-);
-
-const structureElement = document.querySelector(
-    '#result-structure',
-);
-
-const fileContentElement = document.querySelector(
-    '#result-file-content',
-);
+const summaryElement = document.querySelector('#result-summary');
+const structureElement = document.querySelector('#result-structure');
+const fileContentElement = document.querySelector('#result-file-content');
 
 form.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -26,6 +20,10 @@ form.addEventListener('submit', async (event) => {
         pattern_type: patternType,
         pattern: pattern || null,
     };
+
+    outputElement.style.display = 'flex';
+    loadingElement.style.display = 'flex';
+    outputWrapperElement.style.display = 'none';
 
     try {
         const response = await fetch('/ingest', {
@@ -46,6 +44,9 @@ form.addEventListener('submit', async (event) => {
 
         structureElement.textContent = data.directory_structure ?? '';
         fileContentElement.textContent = data.files_content ?? '';
+
+        loadingElement.style.display = 'none';
+        outputWrapperElement.style.display = 'flex';
 
         outputElement.style.display = 'flex';
     } catch (error) {
