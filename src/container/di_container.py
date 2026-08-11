@@ -1,3 +1,6 @@
+from pathlib import Path
+
+from src.controllers.web_controller import WebController
 from src.filesystem.content_inspector import ContentInspector
 from src.filesystem.file_inspector import FileInspector
 from src.filesystem.github_directory_scanner import GitHubDirectoryScanner
@@ -12,6 +15,7 @@ from src.dispatchers.ingest_dispatcher import IngestDispatcher
 from src.controllers.ingest_controller import IngestController
 from src.integrations.github_api_client import GitHubAPIClient
 from src.integrations.github_http_client import GitHubHTTPClient
+from src.providers.view.jinja_view_provider import JinjaViewProvider
 from src.services.ingest_service import IngestService
 from src.strategies.github_ingest_strategy import GitHubIngestStrategy
 from src.validators.directory_rules.directory_exists_rule import DirectoryExistsRule
@@ -28,6 +32,18 @@ from src.validators.pattern_rules.path_filename_pattern_rule import PathFilename
 from src.validators.pattern_rules.recursive_directory_pattern_rule import RecursiveDirectoryPatternRule
 from src.validators.pattern_rules.recursive_filename_pattern_rule import RecursiveFilenamePatternRule
 
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+
+# Web Dependencies
+view_provider = JinjaViewProvider(
+    views_path=PROJECT_ROOT / 'resources' / 'views',
+)
+
+web_controller = WebController(
+    view_provider,
+)
+
+# Ingest Dependencies
 ingest_pattern_validator = IngestPatternValidator(
     ExtensionPatternRule(),
     FilenamePatternRule(),
