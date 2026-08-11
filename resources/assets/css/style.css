@@ -56,11 +56,6 @@
   text-rendering: optimizelegibility !important;
 }
 
-* {
-  scrollbar-width: 8px;
-  scrollbar-color: #ececec;
-}
-
 *::-webkit-scrollbar {
   width: 8px;
   height: 8px;
