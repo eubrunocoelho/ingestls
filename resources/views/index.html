@@ -88,65 +88,70 @@
             </div>
         </form>
     </section>
-    <section class="main__section main__section--output">
-        <div class="section-output__column">
-            <div class="section-output__item section-output__item--summary">
-                <hgroup class="section-output__heading">
-                    <h5 class="section-output__title">Resumo</h5>
-                </hgroup>
-                <div
-                        class="section-output__result section-output__result--summary"
-                >
+    <section id="output" class="main__section main__section--output" style="display: none;">
+        <div class="loading-wrapper">
+            <img src="/assets/img/loader.svg"/>
+        </div>
+        <div class="output-wrapper" style="display: none">
+            <div class="section-output__column">
+                <div class="section-output__item section-output__item--summary">
+                    <hgroup class="section-output__heading">
+                        <h5 class="section-output__title">Resumo</h5>
+                    </hgroup>
+                    <div
+                            class="section-output__result section-output__result--summary"
+                    >
               <span class="section-output__copy-icon-box">
                 <i class="fa-solid fa-copy section-output__copy-icon"></i>
               </span>
-                    <div class="section-output__result-scroll">
-                        <pre><code id="result-summary"></code></pre>
+                        <div class="section-output__result-scroll">
+                            <pre><code id="result-summary"></code></pre>
+                        </div>
                     </div>
-                </div>
-                <div class="section-output__buttons">
-                    <a href="javascript:void(0);" class="section-output__button">
+                    <div class="section-output__buttons">
+                        <a href="javascript:void(0);" class="section-output__button">
                 <span class="section-output__button-icon-box">
                   <i
                           class="fa-solid fa-file-arrow-down section-output__button-icon"
                   ></i>
                 </span>
-                        Download
-                    </a>
-                    <a href="javascript:void(0);" class="section-output__button">
+                            Download
+                        </a>
+                        <a href="javascript:void(0);" class="section-output__button">
                 <span class="section-output__button-icon-box"
                 ><i class="fa-solid fa-copy section-output__button-icon"></i>
                 </span>
-                        Copiar
-                    </a>
+                            Copiar
+                        </a>
+                    </div>
+                </div>
+                <div class="section-output__item section-output__item--structure">
+                    <hgroup class="section-output__heading">
+                        <h5 class="section-output__title">Estrutura de Diretório</h5>
+                    </hgroup>
+                    <div class="section-output__result">
+              <span class="section-output__copy-icon-box">
+                <i class="fa-solid fa-copy section-output__copy-icon"></i>
+              </span>
+                        <div class="section-output__result-scroll">
+                            <pre><code id="result-structure"></code></pre>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="section-output__item section-output__item--structure">
+            <div class="section-output__item">
                 <hgroup class="section-output__heading">
-                    <h5 class="section-output__title">Estrutura de Diretório</h5>
+                    <h5 class="section-output__title">Conteúdo dos Arquivos</h5>
                 </hgroup>
-                <div class="section-output__result">
+                <div
+                        class="section-output__result section-output__result--file-content"
+                >
               <span class="section-output__copy-icon-box">
                 <i class="fa-solid fa-copy section-output__copy-icon"></i>
               </span>
                     <div class="section-output__result-scroll">
-                        <pre><code id="result-structure"></code></pre>
+                        <pre><code id="result-file-content"></code></pre>
                     </div>
-                </div>
-            </div>
-        </div>
-        <div class="section-output__item">
-            <hgroup class="section-output__heading">
-                <h5 class="section-output__title">Conteúdo dos Arquivos</h5>
-            </hgroup>
-            <div
-                    class="section-output__result section-output__result--file-content"
-            >
-              <span class="section-output__copy-icon-box">
-                <i class="fa-solid fa-copy section-output__copy-icon"></i>
-              </span>
-                <div class="section-output__result-scroll">
-                    <pre><code id="result-file-content"></code></pre>
                 </div>
             </div>
         </div>

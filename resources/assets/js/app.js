@@ -1,5 +1,7 @@
 const form = document.querySelector('#ingest-form')
 
+const outputElement = document.querySelector('#output');
+
 const summaryElement = document.querySelector(
     '#result-summary',
 );
@@ -42,8 +44,10 @@ form.addEventListener('submit', async (event) => {
             return;
         }
 
-        structureElement.textContent = data.directory_structure;
-        fileContentElement.textContent = data.files_content;
+        structureElement.textContent = data.directory_structure ?? '';
+        fileContentElement.textContent = data.files_content ?? '';
+
+        outputElement.style.display = 'flex';
     } catch (error) {
         console.error('Erro ao realizar ingest:', error);
     }
