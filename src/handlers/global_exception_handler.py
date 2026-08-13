@@ -1,4 +1,5 @@
 import logging
+import traceback
 
 from flask import jsonify, Flask, Response
 from pydantic import ValidationError
@@ -41,6 +42,20 @@ class GlobalExceptionHandler:
         )
 
     @staticmethod
+    def _log_exception(e: Exception) -> None:
+        logger.exception(e)
+
+    @staticmethod
+    def _get_stacktrace(e: Exception) -> str:
+        return ''.join(
+            traceback.format_exception(
+                type(e),
+                e,
+                e.__traceback__,
+            )
+        )
+
+    @staticmethod
     def handle_validation_error(
             e: ValidationError,
     ) -> tuple[Response, int]:
@@ -52,19 +67,34 @@ class GlobalExceptionHandler:
     def handle_business_exception(
             e: BusinessException,
     ) -> tuple[Response, int]:
+        GlobalExceptionHandler._log_exception(e)
+
         return jsonify({
             'message': str(e),
+            'stacktrace': GlobalExceptionHandler._get_stacktrace(e),
         }), e.status_code
 
     @staticmethod
     def handle_infrastructure_exception(
             e: InfrastructureException,
     ) -> tuple[Response, int]:
-        logger.exception(e)
+        GlobalExceptionHandler._log_exception(e)
 
         return jsonify({
             'message': 'Ocorreu um erro interno durante o processamento da solicitação.',
+            'stacktrace': GlobalExceptionHandler._get_stacktrace(e),
         }), e.status_code
+
+    @staticmethod
+    def handle_unexpected_exception(
+            e: Exception,
+    ) -> tuple[Response, int]:
+        GlobalExceptionHandler._log_exception(e)
+
+        return jsonify({
+            'message': 'Ocorreu um erro inesperado.',
+            'stacktrace': GlobalExceptionHandler._get_stacktrace(e),
+        }), 500
 
     @staticmethod
     def handle_dump_exception(
@@ -75,13 +105,3 @@ class GlobalExceptionHandler:
             mimetype='text/html',
             status=200,
         )
-
-    @staticmethod
-    def handle_unexpected_exception(
-            e: Exception,
-    ) -> tuple[Response, int]:
-        logger.exception(e)
-
-        return jsonify({
-            'message': 'Ocorreu um erro inesperado.',
-        }), 500
