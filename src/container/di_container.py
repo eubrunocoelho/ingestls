@@ -1,4 +1,5 @@
 from src.config.paths import VIEWS_PATH
+from src.integrations.github_ref_resolver import GitHubRefResolver
 from src.integrations.github_repository_cloner import GitHubRepositoryCloner
 from src.controllers.web_controller import WebController
 from src.filesystem.content_inspector import ContentInspector
@@ -78,10 +79,11 @@ windows_ingest_strategy = WindowsIngestStrategy(
 github_ingest_strategy = GitHubIngestStrategy(
     pattern_set_processor,
     tree_filter,
+    GitHubRepositoryCloner(),
+    GitHubRefResolver(),
     WindowsDirectoryScanner(),
     directory_tree_renderer,
     windows_file_reader,
-    GitHubRepositoryCloner()
 )
 
 ingest_dispatcher = IngestDispatcher(

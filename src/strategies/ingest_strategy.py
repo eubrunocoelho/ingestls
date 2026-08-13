@@ -27,22 +27,27 @@ class IngestStrategy(ABC):
 
     def ingest(self, dto: IngestRequestDTO) -> IngestResponseDTO:
         pattern = self.pattern_set_processor.process(dto.pattern)
-
         target = self._resolve_target(dto)
-        directory_tree = self._scan(target)
 
-        method_name = STRATEGY_METHOD_BY_PATTERN_TYPE.get(dto.pattern_type, 'exclude')
-        method = getattr(self.tree_filter, method_name)
+        try:
+            directory_tree = self._scan(target)
 
-        directory_tree = method(
-            root=directory_tree,
-            patterns=pattern,
-        )
+            method_name = STRATEGY_METHOD_BY_PATTERN_TYPE.get(
+                dto.pattern_type, 'exclude'
+            )
+            method = getattr(self.tree_filter, method_name)
 
-        directory_structure = self.directory_tree_renderer.render_tree(directory_tree)
-        file_content = self._read_files(target, directory_tree)
+            directory_tree = method(
+                root=directory_tree,
+                patterns=pattern
+            )
 
-        return IngestResponseDTO(directory_structure, file_content)
+            directory_structure = self.directory_tree_renderer.render_tree(directory_tree)
+            file_content = self._read_files(target, directory_tree)
+
+            return IngestResponseDTO(directory_structure, file_content)
+        finally:
+            self._cleanup(target)
 
     @abstractmethod
     def _resolve_target(self, dto: IngestRequestDTO) -> Any:
@@ -54,4 +59,7 @@ class IngestStrategy(ABC):
 
     @abstractmethod
     def _read_files(self, target: Any, directory_tree: DirectoryNode) -> str:
+        pass
+
+    def _cleanup(self, target: Any) -> None:
         pass
