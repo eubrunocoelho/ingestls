@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from src.filesystem.digest_format import BINARY_FILE_FLAG, EMPTY_FILE_FLAG, FILE_INFO
+from src.filesystem.ingest_format import BINARY_FILE_FLAG, EMPTY_FILE_FLAG, FILE_INFO
 from src.filesystem.directory_node import DirectoryNode
 from src.filesystem.file_inspector import FileInspector
 

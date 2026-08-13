@@ -1,4 +1,4 @@
-from src.container.root import PROJECT_ROOT
+from src.config.paths import VIEWS_PATH
 from src.integrations.github_repository_cloner import GitHubRepositoryCloner
 from src.controllers.web_controller import WebController
 from src.filesystem.content_inspector import ContentInspector
@@ -29,7 +29,7 @@ from src.validators.pattern_rules.recursive_filename_pattern_rule import Recursi
 
 # Web Dependencies
 view_provider = JinjaViewProvider(
-    views_path=PROJECT_ROOT / 'resources' / 'views',
+    views_path=VIEWS_PATH,
 )
 
 web_controller = WebController(
