@@ -13,6 +13,7 @@ from src.filesystem.windows_directory_scanner import WindowsDirectoryScanner
 from src.filesystem.windows_file_reader import WindowsFileReader
 from src.dispatchers.ingest_dispatcher import IngestDispatcher
 from src.controllers.ingest_controller import IngestController
+from src.integrations.git.github_repository_cloner import GitHubRepositoryCloner
 from src.integrations.github_api_client import GitHubAPIClient
 from src.integrations.github_http_client import GitHubHTTPClient
 from src.providers.view.jinja_view_provider import JinjaViewProvider
@@ -100,9 +101,10 @@ windows_ingest_strategy = WindowsIngestStrategy(
 github_ingest_strategy = GitHubIngestStrategy(
     pattern_set_processor,
     tree_filter,
-    github_directory_scanner,
+    WindowsDirectoryScanner(),
     directory_tree_renderer,
-    github_file_reader,
+    windows_file_reader,
+    GitHubRepositoryCloner()
 )
 
 ingest_dispatcher = IngestDispatcher(

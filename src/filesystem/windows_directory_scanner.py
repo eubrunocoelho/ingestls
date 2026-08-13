@@ -4,6 +4,8 @@ from src.filesystem.directory_node import DirectoryNode
 
 
 class WindowsDirectoryScanner:
+    IGNORED_DIRECTORIES = {'.git'}
+
     def read(self, root: Path) -> DirectoryNode:
         return self._build(root)
 
@@ -18,7 +20,13 @@ class WindowsDirectoryScanner:
             return node
 
         children = sorted(
-            root.iterdir(),
+            (
+                child
+                for child in root.iterdir()
+                if not (
+                    child.is_dir() and child.name in self.IGNORED_DIRECTORIES
+            )
+            ),
             key=lambda p: (
                 p.is_file(),
                 p.name.lower(),
