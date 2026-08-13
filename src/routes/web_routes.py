@@ -1,10 +1,8 @@
-from pathlib import Path
-
 from flask import Blueprint, send_from_directory
 
+from src.container.root import PROJECT_ROOT
 from src.container.di_container import web_controller
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
 ASSETS_PATH = PROJECT_ROOT / 'resources' / 'assets'
 
 web_bp = Blueprint('web_routes', __name__)

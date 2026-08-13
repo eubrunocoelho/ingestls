@@ -1,10 +1,8 @@
-from pathlib import Path
-
+from src.container.root import PROJECT_ROOT
+from src.integrations.github_repository_cloner import GitHubRepositoryCloner
 from src.controllers.web_controller import WebController
 from src.filesystem.content_inspector import ContentInspector
 from src.filesystem.file_inspector import FileInspector
-from src.filesystem.github_directory_scanner import GitHubDirectoryScanner
-from src.filesystem.github_file_reader import GitHubFileReader
 from src.filters.factories.locator_factory import LocatorFactory
 from src.filters.factories.matcher_factory import MatcherFactory
 from src.filters.tree_filter import TreeFilter
@@ -13,14 +11,10 @@ from src.filesystem.windows_directory_scanner import WindowsDirectoryScanner
 from src.filesystem.windows_file_reader import WindowsFileReader
 from src.dispatchers.ingest_dispatcher import IngestDispatcher
 from src.controllers.ingest_controller import IngestController
-from src.integrations.git.github_repository_cloner import GitHubRepositoryCloner
-from src.integrations.github_api_client import GitHubAPIClient
-from src.integrations.github_http_client import GitHubHTTPClient
 from src.providers.view.jinja_view_provider import JinjaViewProvider
 from src.services.ingest_service import IngestService
 from src.strategies.github_ingest_strategy import GitHubIngestStrategy
 from src.validators.directory_rules.directory_exists_rule import DirectoryExistsRule
-from src.validators.directory_rules.github_repository_exists_rule import GitHubRepositoryExistsRule
 from src.validators.directory_rules.github_url_format_rule import GitHubURLFormatRule
 from src.validators.ingest_directory_validator import IngestDirectoryValidator
 from src.strategies.windows_ingest_strategy import WindowsIngestStrategy
@@ -32,8 +26,6 @@ from src.validators.pattern_rules.directory_pattern_rule import DirectoryPattern
 from src.validators.pattern_rules.path_filename_pattern_rule import PathFilenamePatternRule
 from src.validators.pattern_rules.recursive_directory_pattern_rule import RecursiveDirectoryPatternRule
 from src.validators.pattern_rules.recursive_filename_pattern_rule import RecursiveFilenamePatternRule
-
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 # Web Dependencies
 view_provider = JinjaViewProvider(
@@ -75,21 +67,6 @@ windows_file_reader = WindowsFileReader(
 
 directory_tree_renderer = DirectoryTreeRenderer()
 
-github_http_client = GitHubHTTPClient()
-
-github_client = GitHubAPIClient(
-    github_http_client,
-)
-
-github_directory_scanner = GitHubDirectoryScanner(
-    github_client,
-)
-
-github_file_reader = GitHubFileReader(
-    github_client,
-    content_inspector,
-)
-
 windows_ingest_strategy = WindowsIngestStrategy(
     pattern_set_processor,
     tree_filter,
@@ -112,14 +89,9 @@ ingest_dispatcher = IngestDispatcher(
     github_ingest_strategy,
 )
 
-github_repository_exists_rule = GitHubRepositoryExistsRule(
-    github_client,
-)
-
 ingest_directory_validator = IngestDirectoryValidator(
     DirectoryExistsRule(),
     GitHubURLFormatRule(),
-    github_repository_exists_rule,
 )
 
 ingest_service = IngestService(

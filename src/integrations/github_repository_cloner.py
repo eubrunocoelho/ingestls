@@ -6,7 +6,8 @@ from dulwich import porcelain
 
 
 class GitHubRepositoryCloner:
-    def clone(self, url: str) -> Path:
+    @staticmethod
+    def clone(url: str) -> Path:
         target = Path(mkdtemp())
 
         try:

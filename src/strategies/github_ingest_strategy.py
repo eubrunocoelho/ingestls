@@ -7,7 +7,7 @@ from src.filesystem.directory_tree_renderer import DirectoryTreeRenderer
 from src.filesystem.windows_directory_scanner import WindowsDirectoryScanner
 from src.filesystem.windows_file_reader import WindowsFileReader
 from src.filters.tree_filter import TreeFilter
-from src.integrations.git.github_repository_cloner import GitHubRepositoryCloner
+from src.integrations.github_repository_cloner import GitHubRepositoryCloner
 from src.integrations.github_constants import GITHUB_URL_PREFIX, GITHUB_URL_PATTERN
 from src.processors.pattern_set_processor import PatternSetProcessor
 from src.strategies.ingest_strategy import IngestStrategy
