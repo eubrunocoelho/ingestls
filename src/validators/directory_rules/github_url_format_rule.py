@@ -9,5 +9,5 @@ class GitHubURLFormatRule(IngestRule):
         return dto.path.startswith(GITHUB_URL_PREFIX)
 
     def validate(self, dto: IngestRequestDTO) -> None:
-        if GITHUB_URL_PATTERN.match(dto.path) is None:
+        if GITHUB_URL_PATTERN.fullmatch(dto.path) is None:
             raise InvalidGitHubURLException(dto.path)
