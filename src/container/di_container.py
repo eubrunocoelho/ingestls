@@ -1,5 +1,6 @@
 from src.config.paths import VIEWS_PATH
-from src.integrations.github_ref_resolver import GitHubRefResolver
+from src.github.parsers.github_url_parser import GitHubURLParser
+from src.github.resolvers.github_ref_resolver import GitHubRefResolver
 from src.integrations.github_repository_cloner import GitHubRepositoryCloner
 from src.controllers.web_controller import WebController
 from src.filesystem.content_inspector import ContentInspector
@@ -12,6 +13,7 @@ from src.filesystem.windows_directory_scanner import WindowsDirectoryScanner
 from src.filesystem.windows_file_reader import WindowsFileReader
 from src.dispatchers.ingest_dispatcher import IngestDispatcher
 from src.controllers.ingest_controller import IngestController
+from src.processors.github_url_processor import GitHubURLProcessor
 from src.providers.view.jinja_view_provider import JinjaViewProvider
 from src.services.ingest_service import IngestService
 from src.strategies.github_ingest_strategy import GitHubIngestStrategy
@@ -76,11 +78,16 @@ windows_ingest_strategy = WindowsIngestStrategy(
     windows_file_reader,
 )
 
+github_url_processor = GitHubURLProcessor(
+    GitHubURLParser(),
+    GitHubRefResolver(),
+)
+
 github_ingest_strategy = GitHubIngestStrategy(
     pattern_set_processor,
     tree_filter,
+    github_url_processor,
     GitHubRepositoryCloner(),
-    GitHubRefResolver(),
     WindowsDirectoryScanner(),
     directory_tree_renderer,
     windows_file_reader,
