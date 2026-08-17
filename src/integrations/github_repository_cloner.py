@@ -8,11 +8,14 @@ from src.exceptions.github.github_api_exception import GitHubAPIException
 
 
 class GitHubRepositoryCloner:
-    def __init__(self, depth: int = 1):
+    def __init__(self, base_dir: Path, depth: int = 1):
+        self.base_dir = base_dir
         self.depth = depth
 
+        self.base_dir.mkdir(parents=True, exist_ok=True)
+
     def clone(self, url: str, ref: str | None = None) -> Path:
-        target = Path(tempfile.mkdtemp(prefix='ingestls-'))
+        target = Path(tempfile.mkdtemp(prefix='ingestls-', dir=self.base_dir))
 
         try:
             porcelain.clone(
@@ -27,5 +30,6 @@ class GitHubRepositoryCloner:
 
         return target
 
-    def cleanup(self, target: Path) -> None:
+    @staticmethod
+    def cleanup(target: Path) -> None:
         shutil.rmtree(target, ignore_errors=True)

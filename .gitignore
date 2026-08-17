@@ -1,3 +1,4 @@
+# IDE
 .idea/
 
 # Ambiente virtual
@@ -25,3 +26,6 @@ Thumbs.db
 build/
 dist/
 *.egg-info/
+
+# Temp Directory
+tmp/*

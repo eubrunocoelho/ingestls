@@ -1,3 +1,4 @@
+from src.config.paths import TMP_DIR
 from src.config.paths import VIEWS_PATH
 from src.github.parsers.github_url_parser import GitHubURLParser
 from src.github.resolvers.github_ref_resolver import GitHubRefResolver
@@ -83,11 +84,15 @@ github_url_processor = GitHubURLProcessor(
     GitHubRefResolver(),
 )
 
+github_repository_cloner = GitHubRepositoryCloner(
+    TMP_DIR
+)
+
 github_ingest_strategy = GitHubIngestStrategy(
     pattern_set_processor,
     tree_filter,
     github_url_processor,
-    GitHubRepositoryCloner(),
+    github_repository_cloner,
     WindowsDirectoryScanner(),
     directory_tree_renderer,
     windows_file_reader,
