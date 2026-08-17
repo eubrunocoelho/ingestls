@@ -47,6 +47,7 @@ class GitHubIngestStrategy(IngestStrategy):
     def _scan(self, target: tuple[GitHubURLDTO, Path]) -> DirectoryNode:
         url_dto, local_path = target
         directory_tree = self.directory_scanner.read(local_path)
+        directory_tree.name = url_dto.repository
         directory_tree.children = [
             child for child in directory_tree.children if child.name != _GIT_DIR_NAME
         ]

@@ -24,15 +24,13 @@ class GitHubRefResolver:
         url = f'{GITHUB_URL_PREFIX}{owner}/{repository}'
 
         try:
-            refs = porcelain.ls_remote(url)
+            refs = porcelain.ls_remote(url).refs
         except Exception as error:
             raise GitHubAPIException(
                 f'Falha ao listar referências de {owner}/{repository}: {error}'
             ) from error
 
-        # Expected type 'dict', got 'LsRemoteResult' instead
         branches = self._ref_names(refs, b'refs/heads/')
-        # Expected type 'dict', got 'LsRemoteResult' instead
         tags = self._ref_names(refs, b'refs/tags/')
 
         for index in range(len(segments), 0, -1):
