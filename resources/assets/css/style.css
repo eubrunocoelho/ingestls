@@ -34,6 +34,10 @@
   --section-form-input-border-color: #ececec;
   --section-form-button-bg-color: #1f883d;
   --section-form-button-border-color: #1f793a;
+  --section-form-button-hover-bg-color: #1a7f37;
+  --section-form-button-hover-border-color: #197435;
+  --section-form-button-active-bg-color: #197b36;
+  --section-form-button-active-border-color: #16692e;
 
   --section-output-result-bg-color: #f8faf8;
   --section-output-button-bg-color: #f6f8fa;
@@ -361,6 +365,7 @@ body {
   background: var(--section-form-button-bg-color);
   border: 1px solid var(--section-form-button-border-color);
   border-radius: 8px;
+  cursor: pointer;
   color: var(--white-color);
   display: flex;
   font-family: var(--font-open-sans);
@@ -370,7 +375,24 @@ body {
   height: 48px;
   justify-content: center;
   padding: 0;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.1s ease,
+    box-shadow 0.15s ease;
   width: 100%;
+}
+
+.section-form__button:hover {
+  background: var(--section-form-button-hover-bg-color);
+  border-color: var(--section-form-button-hover-border-color);
+}
+
+.section-form__button:active {
+  background: var(--section-form-button-active-bg-color);
+  border-color: var(--section-form-button-active-border-color);
+  transform: translateY(1px);
+  box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.1);
 }
 
 .section-form__button-icon-box {
