@@ -60,7 +60,23 @@
               class="section-form__input-text"
               placeholder="URL ou Diretório"
             />
-            <button type="button" class="section-form__input-button"></button>
+            <div class="section-form__input-wrapper">
+              <input
+                type="file"
+                id="folder-input"
+                class="section-form__input-file"
+                webkitdirectory
+                directory
+                multiple
+                hidden
+              />
+              <button
+                type="button"
+                class="section-form__input-button"
+                aria-label="Selecionar diretório"
+                onclick="document.getElementById('folder-input').click()"
+              ></button>
+            </div>
           </div>
           <div class="section-form__grid">
             <div class="section-form__select-wrapper">
