@@ -12,11 +12,6 @@ class IngestController:
     def __init__(self, ingest_service: IngestService):
         self.ingest_service = ingest_service
 
-    def index(self) -> Response:
-        return jsonify({
-            'message': 'Olá, mundo!',
-        })
-
     def create(self) -> tuple[Response, int]:
         validated = RequestValidator.validate(
             IngestRequestValidator,

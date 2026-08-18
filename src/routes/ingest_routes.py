@@ -1,15 +1,13 @@
-from flask import Blueprint
+from flask import Blueprint, Response
 
-from src.container.di_container import ingest_controller
+from src.helpers.functions import get_container
+from src.controllers.ingest_controller import IngestController
 
-ingest_bp: Blueprint = Blueprint('ingest_routes', __name__)
-
-
-@ingest_bp.route('/ingest', methods=['GET'])
-def index():
-    return ingest_controller.index()
+ingest_bp = Blueprint('ingest_routes', __name__)
 
 
 @ingest_bp.route('/ingest', methods=['POST'])
-def create():
-    return ingest_controller.create()
+def create() -> tuple[Response, int]:
+    controller = get_container().resolve(IngestController)
+
+    return controller.create()
