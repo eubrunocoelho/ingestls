@@ -536,6 +536,8 @@ body {
 
 .section-output__result--summary {
   height: 180px !important;
+  max-height: 180px;
+  min-height: 180px;
 }
 
 .section-output__result--file-content {
@@ -693,7 +695,7 @@ body {
     flex: 1 1 0;
     height: auto;
     max-height: 340px;
-    min-height: 0;
+    min-height: 340px;
     min-width: 0;
   }
 
