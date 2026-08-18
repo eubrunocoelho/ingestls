@@ -35,6 +35,9 @@
 
   --section-form-input-border-color: #ececec;
 
+  --section-form-input-text-focus-border-color: #1f883d;
+  --section-form-input-text-focus-ring-color: rgba(31, 136, 61, 0.25);
+
   --section-form-input-button-hover-bg-color: #f3f4f6;
   --section-form-input-button-active-bg-color: #ebecf0;
 
@@ -308,7 +311,15 @@ body {
   min-width: 0;
   outline: none;
   padding: 0 20px 0 20px;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
   width: 100%;
+}
+
+.section-form__input-text:focus {
+  border-color: var(--section-form-input-text-focus-border-color);
+  box-shadow: 0 0 0 3px var(--section-form-input-text-focus-ring-color);
 }
 
 .section-form__input-text::placeholder {
