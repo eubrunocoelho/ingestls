@@ -1,3 +1,5 @@
+from src.providers.ingest_summary_provider import IngestSummaryProvider
+from src.providers.token_estimator import TokenEstimator
 from src.config.paths import VIEWS_PATH, TMP_DIR
 from src.container.di_container import DIContainer
 from src.controllers.ingest_controller import IngestController
@@ -38,6 +40,7 @@ class AppServiceProvider:
         self._register_filesystem(container)
         self._register_filters(container)
         self._register_github(container)
+        self._register_summary(container)
         self._register_ingest(container)
 
     @staticmethod
@@ -135,6 +138,20 @@ class AppServiceProvider:
         )
 
     @staticmethod
+    def _register_summary(container: DIContainer) -> None:
+        container.singleton(
+            TokenEstimator,
+            lambda: TokenEstimator()
+        )
+
+        container.singleton(
+            IngestSummaryProvider,
+            lambda: IngestSummaryProvider(
+                container.resolve(TokenEstimator)
+            )
+        )
+
+    @staticmethod
     def _register_ingest(container: DIContainer) -> None:
         container.singleton(
             IngestPatternValidator,
@@ -162,7 +179,8 @@ class AppServiceProvider:
                 container.resolve(TreeFilter),
                 container.resolve(WindowsDirectoryScanner),
                 container.resolve(DirectoryTreeRenderer),
-                container.resolve(WindowsFileReader)
+                container.resolve(WindowsFileReader),
+                container.resolve(IngestSummaryProvider)
             )
         )
 
@@ -176,6 +194,7 @@ class AppServiceProvider:
                 container.resolve(WindowsDirectoryScanner),
                 container.resolve(DirectoryTreeRenderer),
                 container.resolve(WindowsFileReader),
+                container.resolve(IngestSummaryProvider)
             )
         )
 

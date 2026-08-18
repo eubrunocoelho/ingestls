@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from src.providers.ingest_summary_provider import IngestSummaryProvider
 from src.dtos.github_url_dto import GitHubURLDTO
 from src.dtos.ingest_request_dto import IngestRequestDTO
 from src.filesystem.directory_node import DirectoryNode
@@ -26,9 +27,10 @@ class GitHubIngestStrategy(IngestStrategy[tuple[GitHubURLDTO, Path]]):
             directory_scanner: WindowsDirectoryScanner,
             directory_tree_renderer: DirectoryTreeRenderer,
             file_reader: WindowsFileReader,
+            ingest_summary_provider: IngestSummaryProvider,
 
     ):
-        super().__init__(pattern_set_processor, tree_filter, directory_tree_renderer)
+        super().__init__(pattern_set_processor, tree_filter, directory_tree_renderer, ingest_summary_provider)
         self.url_processor = url_processor
         self.repository_cloner = repository_cloner
         self.directory_scanner = directory_scanner
@@ -59,6 +61,11 @@ class GitHubIngestStrategy(IngestStrategy[tuple[GitHubURLDTO, Path]]):
 
     def _read_files(self, target: tuple[GitHubURLDTO, Path], directory_tree: DirectoryNode) -> str:
         return self.file_reader.read(directory_tree)
+
+    def _describe_target(self, target: tuple[GitHubURLDTO, Path]) -> str:
+        url_dto, _ = target
+
+        return f'{url_dto.owner}/{url_dto.repository}'
 
     def _cleanup(self, target: tuple[GitHubURLDTO, Path]) -> None:
         _, local_path = target
