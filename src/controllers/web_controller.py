@@ -1,12 +1,12 @@
 from flask import Response
 
-from src.providers.view.view_provider import ViewProvider
+from src.providers.jinja_view_provider import JinjaViewProvider
 
 
 class WebController:
     def __init__(
             self,
-            view_provider: ViewProvider,
+            view_provider: JinjaViewProvider,
     ):
         self.view_provider = view_provider
 

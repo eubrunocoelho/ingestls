@@ -3,10 +3,8 @@ from typing import Any
 
 from jinja2 import FileSystemLoader, Environment
 
-from src.providers.view.view_provider import ViewProvider
 
-
-class JinjaViewProvider(ViewProvider):
+class JinjaViewProvider:
     def __init__(self, views_path: Path):
         self.environment = Environment(
             loader=FileSystemLoader(views_path)

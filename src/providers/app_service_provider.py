@@ -18,7 +18,7 @@ from src.github.resolvers.github_ref_resolver import GitHubRefResolver
 from src.integrations.github_repository_cloner import GitHubRepositoryCloner
 from src.processors.github_url_processor import GitHubURLProcessor
 from src.processors.pattern_set_processor import PatternSetProcessor
-from src.providers.view.jinja_view_provider import JinjaViewProvider
+from src.providers.jinja_view_provider import JinjaViewProvider
 from src.services.ingest_service import IngestService
 from src.strategies.github_ingest_strategy import GitHubIngestStrategy
 from src.strategies.windows_ingest_strategy import WindowsIngestStrategy
