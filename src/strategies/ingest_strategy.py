@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Any
+from typing import Any, TypeVar, Generic
 
 from src.dtos.ingest_response_dto import IngestResponseDTO
 from src.dtos.ingest_request_dto import IngestRequestDTO
@@ -9,8 +9,10 @@ from src.filters.tree_filter import TreeFilter
 from src.processors.pattern_set_processor import PatternSetProcessor
 from src.strategies.pattern_type_dispatch import STRATEGY_METHOD_BY_PATTERN_TYPE
 
+TTarget = TypeVar('TTarget')
 
-class IngestStrategy(ABC):
+
+class IngestStrategy(ABC, Generic[TTarget]):
     def __init__(
             self,
             pattern_set_processor: PatternSetProcessor,
@@ -50,16 +52,16 @@ class IngestStrategy(ABC):
             self._cleanup(target)
 
     @abstractmethod
-    def _resolve_target(self, dto: IngestRequestDTO) -> Any:
+    def _resolve_target(self, dto: IngestRequestDTO) -> TTarget:
         pass
 
     @abstractmethod
-    def _scan(self, target: Any) -> DirectoryNode:
+    def _scan(self, target: TTarget) -> DirectoryNode:
         pass
 
     @abstractmethod
-    def _read_files(self, target: Any, directory_tree: DirectoryNode) -> str:
+    def _read_files(self, target: TTarget, directory_tree: DirectoryNode) -> str:
         pass
 
-    def _cleanup(self, target: Any) -> None:
+    def _cleanup(self, target: TTarget) -> None:
         pass

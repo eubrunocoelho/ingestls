@@ -16,7 +16,7 @@ from src.strategies.ingest_strategy import IngestStrategy
 _GIT_DIR_NAME = '.git'
 
 
-class GitHubIngestStrategy(IngestStrategy):
+class GitHubIngestStrategy(IngestStrategy[tuple[GitHubURLDTO, Path]]):
     def __init__(
             self,
             pattern_set_processor: PatternSetProcessor,
