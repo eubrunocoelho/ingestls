@@ -1,8 +1,8 @@
 from pathlib import Path
 
-from src.filesystem.ingest_format import BINARY_FILE_FLAG, EMPTY_FILE_FLAG, FILE_INFO
 from src.filesystem.directory_node import DirectoryNode
 from src.filesystem.file_inspector import FileInspector
+from src.filesystem.ingest_format import EMPTY_FILE_FLAG, BINARY_FILE_FLAG, FILE_START, FILE_END
 
 
 class WindowsFileReader:
@@ -30,15 +30,19 @@ class WindowsFileReader:
                 continue
 
             file_path = Path(child.path)
-            directory = file_path.parent.relative_to(root_path)
-            directory_display = './' if str(directory) == '.' else str(directory)
+            relative_path = file_path.relative_to(root_path)
 
-            contents.append(FILE_INFO.format(
-                filename=child.name,
-                directory=directory_display,
-            ))
+            contents.append(
+                FILE_START.format(
+                    path=relative_path.as_posix(),
+                )
+            )
 
-            contents.append(self._get_file_content(file_path))
+            contents.append(
+                self._get_file_content(file_path)
+            )
+
+            contents.append(FILE_END)
 
     def _get_file_content(self, file_path: Path) -> str:
         if self.file_inspector.is_empty(file_path):
