@@ -45,10 +45,10 @@ class WindowsFileReader:
             contents.append(FILE_END)
 
     def _get_file_content(self, file_path: Path) -> str:
-        if self.file_inspector.is_empty(file_path):
-            return EMPTY_FILE_FLAG
-
         if self.file_inspector.is_binary(file_path):
             return BINARY_FILE_FLAG
+
+        if file_path.stat().st_size == 0:
+            return EMPTY_FILE_FLAG
 
         return file_path.read_text(encoding='utf-8')
