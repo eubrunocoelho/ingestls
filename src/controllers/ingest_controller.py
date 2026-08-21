@@ -1,11 +1,12 @@
-from dataclasses import asdict
+from http import HTTPStatus
 
-from flask import jsonify, request, Response
+from flask import request, Response
 
 from src.dtos.ingest_request_dto import IngestRequestDTO
 from src.validators.ingest_request_validator import IngestRequestValidator
 from src.validators.request_validator import RequestValidator
 from src.services.ingest_service import IngestService
+from src.responses.response_factory import ResponseFactory
 
 
 class IngestController:
@@ -26,4 +27,7 @@ class IngestController:
 
         result = self.ingest_service.ingest(dto)
 
-        return jsonify(asdict(result)), 201
+        return ResponseFactory.json(
+            result,
+            HTTPStatus.CREATED,
+        )
