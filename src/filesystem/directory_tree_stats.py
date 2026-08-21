@@ -18,7 +18,6 @@ class DirectoryTreeStats:
                 directory_count += 1
                 nested = cls.from_tree(child)
                 directory_count += nested.directory_count
-                file_count += nested.directory_count
                 file_count += nested.file_count
             else:
                 file_count += 1
