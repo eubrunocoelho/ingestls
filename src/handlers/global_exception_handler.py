@@ -76,7 +76,10 @@ class GlobalExceptionHandler:
 
         return ResponseFactory.json(
             {
-                'message': str(e),
+                'message': str(e) or (
+                    'Ocorreu um erro interno durante o '
+                    'processamento da solicitação.'
+                ),
                 'stacktrace': GlobalExceptionHandler._get_stacktrace(e),
             },
             HTTPStatus(e.status_code)
