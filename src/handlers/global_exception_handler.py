@@ -1,13 +1,15 @@
 import logging
 import traceback
+from http import HTTPStatus
 
-from flask import jsonify, Flask, Response
+from flask import Flask, Response
 from pydantic import ValidationError
 
 from src.exceptions.base.business_exception import BusinessException
 from src.exceptions.base.infrastructure_exception import InfrastructureException
 from src.exceptions.dump.debug_exception import DumpException
 from src.responses.debug_response import DebugResponse
+from src.responses.response_factory import ResponseFactory
 from src.responses.validation_error_response import ValidationErrorResponse
 
 logger = logging.getLogger(__name__)
@@ -61,7 +63,10 @@ class GlobalExceptionHandler:
     ) -> tuple[Response, int]:
         response = ValidationErrorResponse.from_pydantic(e)
 
-        return jsonify(response.to_dict()), 400
+        return ResponseFactory.json(
+            response,
+            HTTPStatus.BAD_REQUEST,
+        )
 
     @staticmethod
     def handle_business_exception(
@@ -69,10 +74,13 @@ class GlobalExceptionHandler:
     ) -> tuple[Response, int]:
         GlobalExceptionHandler._log_exception(e)
 
-        return jsonify({
-            'message': str(e),
-            'stacktrace': GlobalExceptionHandler._get_stacktrace(e),
-        }), e.status_code
+        return ResponseFactory.json(
+            {
+                'message': str(e),
+                'stacktrace': GlobalExceptionHandler._get_stacktrace(e),
+            },
+            HTTPStatus(e.status_code)
+        )
 
     @staticmethod
     def handle_infrastructure_exception(
@@ -80,10 +88,16 @@ class GlobalExceptionHandler:
     ) -> tuple[Response, int]:
         GlobalExceptionHandler._log_exception(e)
 
-        return jsonify({
-            'message': 'Ocorreu um erro interno durante o processamento da solicitação.',
-            'stacktrace': GlobalExceptionHandler._get_stacktrace(e),
-        }), e.status_code
+        return ResponseFactory.json(
+            {
+                'message': str(e) or (
+                    'Ocorreu um erro interno durante o '
+                    'processamento da solicitação.'
+                ),
+                'stacktrace': GlobalExceptionHandler._get_stacktrace(e),
+            },
+            HTTPStatus(e.status_code)
+        )
 
     @staticmethod
     def handle_unexpected_exception(
@@ -91,10 +105,13 @@ class GlobalExceptionHandler:
     ) -> tuple[Response, int]:
         GlobalExceptionHandler._log_exception(e)
 
-        return jsonify({
-            'message': 'Ocorreu um erro inesperado.',
-            'stacktrace': GlobalExceptionHandler._get_stacktrace(e),
-        }), 500
+        return ResponseFactory.json(
+            {
+                'message': 'Ocorreu um erro inesperado.',
+                'stacktrace': GlobalExceptionHandler._get_stacktrace(e),
+            },
+            HTTPStatus.INTERNAL_SERVER_ERROR
+        )
 
     @staticmethod
     def handle_dump_exception(

@@ -1,5 +1,8 @@
-class BusinessException(Exception):
-    status_code = 400
+from http import HTTPStatus
 
-    def __init__(self, message: str):
+
+class BusinessException(Exception):
+    def __init__(self, message: str, status_code: HTTPStatus = HTTPStatus.UNPROCESSABLE_ENTITY) -> None:
         super().__init__(message)
+
+        self.status_code = status_code
