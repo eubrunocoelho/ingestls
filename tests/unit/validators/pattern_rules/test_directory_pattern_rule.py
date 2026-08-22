@@ -7,6 +7,7 @@ from src.validators.pattern_rules.directory_pattern_rule import DirectoryPattern
 
 @pytest.fixture
 def rule() -> DirectoryPatternRule:
+    # Cria uma instância da regra de padrões de diretório global.
     return DirectoryPatternRule()
 
 
@@ -17,6 +18,7 @@ def rule() -> DirectoryPatternRule:
     ('v1.0/', 'v1.0'),
 ])
 def test_matches_valid_directory_patterns(rule, pattern, expected_value):
+    # Reconhece padrões de diretório global e remove a barra final do valor.
     result = rule.match(pattern)
 
     assert result is not None
@@ -34,4 +36,5 @@ def test_matches_valid_directory_patterns(rule, pattern, expected_value):
     '',  # vazio
 ])
 def test_does_not_match_invalid_patterns(rule, pattern):
+    # Retorna `None` para padrões que não representam um diretório global válido.
     assert rule.match(pattern) is None

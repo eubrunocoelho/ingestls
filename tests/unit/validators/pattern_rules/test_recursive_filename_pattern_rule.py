@@ -7,6 +7,7 @@ from src.validators.pattern_rules.recursive_filename_pattern_rule import Recursi
 
 @pytest.fixture
 def rule() -> RecursiveFilenamePatternRule:
+    # Cria uma instância de regra de arquivos recursivos.
     return RecursiveFilenamePatternRule()
 
 
@@ -16,6 +17,7 @@ def rule() -> RecursiveFilenamePatternRule:
     ('*/README.md', 'README.md'),
 ])
 def test_matches_valid_recursive_filename_patterns(rule, pattern, expected_value):
+    # Reconhece arquivos recursivos e remove o prefixo `*/` do valor.
     result = rule.match(pattern)
 
     assert result is not None
@@ -32,4 +34,5 @@ def test_matches_valid_recursive_filename_patterns(rule, pattern, expected_value
     '',  # vazio
 ])
 def test_does_not_match_invalid_patterns(rule, pattern):
+    # Retorna `None` para padrões que não representam um arquivo recursivo válido.
     assert rule.match(pattern) is None

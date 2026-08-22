@@ -7,6 +7,7 @@ from src.validators.pattern_rules.recursive_directory_pattern_rule import Recurs
 
 @pytest.fixture
 def rule() -> RecursiveDirectoryPatternRule:
+    # Cria uma instância da regra de diretórios recursivos.
     return RecursiveDirectoryPatternRule()
 
 
@@ -16,6 +17,7 @@ def rule() -> RecursiveDirectoryPatternRule:
     ('*/cache-dir/', 'cache-dir'),
 ])
 def test_matches_valid_recursive_directory_patterns(rule, pattern, expected_value):
+    # Reconhece diretórios recursivos e extrai seu nome sem o prefixo e a barra.
     result = rule.match(pattern)
 
     assert result is not None
@@ -32,4 +34,5 @@ def test_matches_valid_recursive_directory_patterns(rule, pattern, expected_valu
     '',  # vazio
 ])
 def test_does_not_match_invalid_patterns(rule, pattern):
+    # Retorna `None` para padrões que não representam um diretório recursivo válido.
     assert rule.match(pattern) is None

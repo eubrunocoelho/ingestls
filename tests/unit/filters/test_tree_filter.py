@@ -31,7 +31,7 @@ def _flatten(node: DirectoryNode, current_path: str = '') -> dict[str, bool]:
 
 
 def _build_sample_project_tree() -> DirectoryNode:
-    # Reproduz a árvore do `ticket` informado
+    # Reproduz a àrvore do `ticket` informado
     # (mesma saída do `WindowsDirectoryScanner` sobre `tests/fixtures/sample_project`).
     return _dir(
         'sample_project',
@@ -93,7 +93,7 @@ def _build_sample_project_tree() -> DirectoryNode:
     )
 
 
-# Padrão de `ticket` para `*.php,vendor/,index.php,*/vendor/,*/cache.php,app/cache.php`
+# Padrão de `ticket` para `*.php,vendor/,index.php,*/vendor/,*/cache.php,app/cache.php`.
 def _ticket_patterns() -> list[PatternDTO]:
     return [
         PatternDTO(
@@ -141,7 +141,7 @@ def tree_filter() -> TreeFilter:
 
 
 # Tudo que deve sobrar depois de aplicar os 6 padrões: nenhum `.php`,
-# nenhum diretório `vendor` (em qualquer profundidade), diretórios que ficaram vazios
+# nenhum diretório `vendor` (em qualquer profundidade), diretórios que ficarem vazios
 # permanecem na árvore (o `TreeFilter` não poda diretório vazio).
 EXPECTED_REMAINING_ENTRIES: dict[str, bool] = {
     'app': True,
@@ -162,6 +162,10 @@ EXPECTED_REMAINING_ENTRIES: dict[str, bool] = {
 
 
 def test_exclude_removes_all_php_files_and_all_vendor_directories(tree_filter):
+    # Teste principal de `exclude`: aplica os 6 padrões do `ticket` na árvore
+    # completa e compara a árvore achatada inteira contra `EXPECTED_REMAINING_ENTRIES`,
+    # confirmando de uma vaz que todo `.php` some e ambas as subárvores `vendor/`
+    # (raiz e `app/vendor`) somem inteiras.
     tree = _build_sample_project_tree()
     patterns = _ticket_patterns()
 
@@ -171,6 +175,8 @@ def test_exclude_removes_all_php_files_and_all_vendor_directories(tree_filter):
 
 
 def test_exclude_removes_root_level_vendor_directory_entirely(tree_filter):
+    # Confirma isoladamente que o `vendor/` da raiz não aparece mais entre
+    # os filhos diretos do resultado.
     tree = _build_sample_project_tree()
 
     result = tree_filter.exclude(root=tree, patterns=_ticket_patterns())
@@ -180,6 +186,9 @@ def test_exclude_removes_root_level_vendor_directory_entirely(tree_filter):
 
 
 def test_exclude_removes_nested_vendor_directory_entirely(tree_filter):
+    # Confirma isoladamente que o `app/vendor/` (aninhado, não na raiz)
+    # também some -- provando que o padrão `DIRECTORY` funciona em
+    # qualquer profundidade, não só no nível raiz.
     tree = _build_sample_project_tree()
 
     result = tree_filter.exclude(root=tree, patterns=_ticket_patterns())
@@ -191,7 +200,7 @@ def test_exclude_removes_nested_vendor_directory_entirely(tree_filter):
 
 def test_exclude_keeps_directories_that_became_empty_after_filtering(tree_filter):
     # `app/Http/Controllers` só tinha `Controller.php`, que deve ser removido pelo
-    # padrão de extensão -- mas o diretório em si permanece, vazio
+    # padrão de extensão -- mas o diretório em si permanece, vazio.
     tree = _build_sample_project_tree()
 
     result = tree_filter.exclude(root=tree, patterns=_ticket_patterns())
@@ -205,6 +214,9 @@ def test_exclude_keeps_directories_that_became_empty_after_filtering(tree_filter
 
 
 def test_exclude_keeps_files_that_do_not_match_any_pattern(tree_filter):
+    # Confirma que arquivos que não batem em nenhum dos 6 padrões (readme.md,
+    # style.css) permanecem intactos dentro de seus diretórios, sem serem
+    # afetados pela filtragem dos vizinhos.
     tree = _build_sample_project_tree()
 
     result = tree_filter.exclude(root=tree, patterns=_ticket_patterns())
@@ -218,6 +230,8 @@ def test_exclude_keeps_files_that_do_not_match_any_pattern(tree_filter):
 
 
 def test_exclude_with_no_patterns_returns_tree_unchanged(tree_filter):
+    # Sem nenhum padrão, nada bate em lugar nenhum -- a árvore deve sair
+    # idêntica à original, já que `exclude` só remove o que bate.
     tree = _build_sample_project_tree()
     original_flat = _flatten(tree)
 
@@ -230,7 +244,7 @@ def test_exclude_does_not_mutate_unrelated_siblings(tree_filter):
     # Regressão simples: excluir `app/cache.php` via padrão `PATH` não deve
     # afetar `other/cache.php` nem `nested/deep/cache.php` (que só são
     # removidos pelos padrões `GLOBAL/RECURSIVE`, testados separadamente aqui
-    # combinando só o padrão `PATH` isoladamente)
+    # combinando só o padrão `PATH` isoladamente).
     tree = _build_sample_project_tree()
     path_only_pattern = [
         PatternDTO(
@@ -256,7 +270,7 @@ def test_exclude_does_not_mutate_unrelated_siblings(tree_filter):
 # Tudo que deve sobrar após o `include` com os mesmos 6 padrões do `ticket`:
 # só o que bate (todo `.php` e as DUAS subárvores `vendor` inteiras). Qualquer
 # diretório que não bate e não tem nenhum descendente que bate é podado
-# (`docs/` e `public/assets` somem por completo)
+# (`docs/` e `public/assets` somem por completo).
 EXPECTED_INCLUDED_ENTRIES: dict[str, bool] = {
     'app': True,
     'app/Http': True,
@@ -286,6 +300,9 @@ EXPECTED_INCLUDED_ENTRIES: dict[str, bool] = {
 
 
 def test_include_keeps_only_matched_php_files_and_both_vendor_subtrees(tree_filter):
+    # Teste principal de `include`: aplica os mesmos 6 padrões do `ticket` e
+    # compara a àrvore achatada inteira contra `EXPECTED_INCLUDED_ENTRIES` --
+    # o "espelho invertido" do teste principal de `exclude`.
     tree = _build_sample_project_tree()
     patterns = _ticket_patterns()
 
@@ -306,7 +323,7 @@ def test_include_prunes_directory_with_no_matching_descendants_entirely(tree_fil
 
 
 def test_include_prunes_nested_directory_with_no_matching_descendants(tree_filter):
-    # `public/asserts` só tem style.css - deve sumir, mas `public` permanece
+    # `public/assets` só tem style.css - deve sumir, mas `public` permanece
     # porque `public/index.php` bate.
     tree = _build_sample_project_tree()
 
@@ -320,6 +337,8 @@ def test_include_prunes_nested_directory_with_no_matching_descendants(tree_filte
 
 
 def test_include_keeps_root_level_file_matching_extension_and_filename_patterns(tree_filter):
+    # Confirma que `index.php` (arquivo solto na raiz) sobrevive ao `include`,
+    # já que bate tanto no padrão de extensão quanto no nome de arquivo.
     tree = _build_sample_project_tree()
 
     result = tree_filter.include(root=tree, patterns=_ticket_patterns())
@@ -329,8 +348,8 @@ def test_include_keeps_root_level_file_matching_extension_and_filename_patterns(
 
 
 def test_include_with_no_patterns_returns_tree_unchanged(tree_filter):
-    # Sem nenhum padrãoo de `include`, nada é filtrado - convenção simétrica
-    # ao `exclude():` lista vazia de `patterns` significa "não filtrar nada",
+    # Sem nenhum padrão de `include`, nada é filtrado - convenção simétrica
+    # ao `exclude()`: lista vazia de `patterns` significa "não filtrar nada",
     # não "esconder tudo".
     tree = _build_sample_project_tree()
     original_flat = _flatten(tree)
@@ -372,7 +391,7 @@ def test_include_directory_pattern_keeps_entire_subtree_even_non_matching_files(
 
 def test_include_without_directory_pattern_recurses_and_prunes_non_matching_files(tree_filter):
     # Mesma árvore do teste acima, mas SEM padrão de diretório - agora `include`
-    # recusa por dentro de `vendor` e pode o que não bate.
+    # recusa por dentro de `vendor` e poda o que não bate.
     tree = _dir(
         'root',
         [

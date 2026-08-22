@@ -76,6 +76,10 @@ class _FakeRootPath:
 
 # --- casos isolados, construídos com `tmp_path` ---
 def test_returns_leaf_node_for_a_single_file(scanner, tmp_path):
+    # Cria um arquivo solto (sem diretório pai relevante) e confirma que o
+    # scanner devolve um nó folha: `is_directory=False` e `children=[]`.
+    # Cobre o caso base de `_build` quando `root.is_dir()` é `False` --
+    # não depende da fixture `sample_project`.
     file_path = tmp_path / 'notes.txt'
     file_path.write_text('hello')
 
@@ -87,6 +91,8 @@ def test_returns_leaf_node_for_a_single_file(scanner, tmp_path):
 
 
 def test_returns_directory_node_with_no_children_for_empty_directory(scanner, tmp_path):
+    # Cria um diretório vazio e confirma `is_directory=True`, `children=[]`.
+    # Cobre o caso em que `root.iterdir()` não devolve nenhum item.
     empty_dir = tmp_path / 'empty'
     empty_dir.mkdir()
 
@@ -98,6 +104,10 @@ def test_returns_directory_node_with_no_children_for_empty_directory(scanner, tm
 
 
 def test_builds_nested_tree_recursively(scanner, tmp_path):
+    # Monta uma árvore própria (src/main.py, src/utils/helpers.py, readme.md)
+    # e confirma via `_flatten` que a recursão desce corretamente em
+    # múltiplos níveis. Independente da fixture -- valida só a mecânica
+    # de recursão do `_build`.
     (tmp_path / 'src').mkdir()
     (tmp_path / 'src' / 'main.py').write_text('print(1)')
     (tmp_path / 'src' / 'utils').mkdir()
@@ -116,6 +126,10 @@ def test_builds_nested_tree_recursively(scanner, tmp_path):
 
 
 def test_sorts_directories_before_files_case_insensitively(scanner, tmp_path):
+    # Cria nomes propositalmente misturados em maiúsculas/minúsculas para
+    # confirmar a chave de ordenação usada em `_build`: `(p.is_file(), p.name.lower())`.
+    # Diretórios primeiro (ordem alfabética case-insensitive: apple, Cherry),
+    # depois arquivos (ordem alfabética case-insensitive: aardvark.txt, Banana.txt).
     (tmp_path / 'Banana.txt').write_text('')
     (tmp_path / 'aardvark.txt').write_text('')
     (tmp_path / 'Cherry').mkdir()
@@ -123,18 +137,18 @@ def test_sorts_directories_before_files_case_insensitively(scanner, tmp_path):
 
     result = scanner.read(tmp_path)
 
-    # Diretórios primeiro (ordem alfabética case-insensitive: apple, Cherry),
-    # depois arquivos (ordem alfabética case-insensitive: aardvark.txt, Banana.txt)
     assert [child.name for child in result.children] == [
         'apple', 'Cherry', 'aardvark.txt', 'Banana.txt'
     ]
 
 
 def test_falls_back_to_str_when_root_has_no_name(scanner):
+    # Usa o `_FakeRootPath` (objeto mínimo, não um `Path` de verdade) para
+    # simular a raiz de um drive Windows (`root.name == ''`), confirmando
+    # o fallback `str(root)` usado em `_build` quando o nome está vazio.
     fake_root = _FakeRootPath(name='', is_dir_value=False)
 
-    # Expected type 'Path', got '_FakeRootPath' instead
-    result = scanner.read(fake_root) # type: ignore[arg-type]
+    result = scanner.read(fake_root)  # type: ignore[arg-type]
 
     assert result.name == 'C:\\'
     assert result.is_directory is False
@@ -143,6 +157,11 @@ def test_falls_back_to_str_when_root_has_no_name(scanner):
 
 # --- integração com a `fixture` real ---
 def test_scans_the_real_sample_project_fixture_completely(scanner):
+    # Teste mais importante desta suíte: varre `tests/fixtures/sample_project`
+    # de verdade (disco real, não `tmp_path`) e compara a árvore achatada
+    # (`_flatten`) inteira contra `EXPECTED_FIXTURE_ENTRIES`, que espelha
+    # exatamente a saída de `$ ls -ltR` sobre a fixture. Garante que nenhum
+    # arquivo/diretório real fica de fora e que nenhum item extra aparece.
     if not FIXTURE_ROOT.exists():
         pytest.skip(f'`Fixture` não encontrada em {FIXTURE_ROOT}')
 
@@ -154,6 +173,9 @@ def test_scans_the_real_sample_project_fixture_completely(scanner):
 
 
 def test_sample_project_root_children_are_sorted_dirs_first_then_files(scanner):
+    # Confirma a ordem dos filhos diretos da raiz da fixture: os 6 diretórios
+    # (app, docs, nested, other, public, vendor) em ordem alfabética, seguidos
+    # do único arquivo da raiz (index.php). Bate com `$ ls -ltR` da raiz.
     if not FIXTURE_ROOT.exists():
         pytest.skip(f'`Fixture` não encontrada em {FIXTURE_ROOT}')
 
@@ -171,6 +193,9 @@ def test_sample_project_root_children_are_sorted_dirs_first_then_files(scanner):
 
 
 def test_sample_project_app_children_are_sorted_dirs_first_then_files(scanner):
+    # Confirma a ordem dos filtros de `app/`: os 4 diretórios (Http, Models,
+    # Providers, vendor) em ordem alfabética case-insensitive, seguidos do
+    # único arquivo (cache.php). Bate com `$ ls -ltR` de `./app`.
     if not FIXTURE_ROOT.exists():
         pytest.skip(f'`Fixture` não encontrada em {FIXTURE_ROOT}')
 

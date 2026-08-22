@@ -7,6 +7,7 @@ from src.validators.pattern_rules.filename_pattern_rule import FilenamePatternRu
 
 @pytest.fixture
 def rule() -> FilenamePatternRule:
+    # Cria uma instância de regra de padrões de nome de arquivo.
     return FilenamePatternRule()
 
 
@@ -17,6 +18,7 @@ def rule() -> FilenamePatternRule:
     'style.css',
 ])
 def test_matches_valid_filename_patterns(rule, pattern):
+    # Reconhece nomes de arquivos com extensão no escopo global.
     result = rule.match(pattern)
 
     assert result is not None
@@ -27,12 +29,13 @@ def test_matches_valid_filename_patterns(rule, pattern):
 
 
 def test_also_matches_extension_wildcard_pattern_due_to_permissive_regex(rule):
-    # ATENÇÃO: a `regex` desta regra não excluí '*', então ela também
+    # ATENÇÃO: a `regex/combinação` desta regra não excluí '*', então ela também
     # reconhece padrões como `*.php`. Quem impede que isso vire
-    # `kind=FILE` em vez de `kind=EXTENSION` é a ORDEM das
+    # `kind=FILE` em vez de `kind=EXTENSION` é a ordem das
     # regras dentro do `IngestPatternValidator` (`ExtensionPatternRule` vem antes).
-    # Este teste documenta a sobreposição; a garantia de precedência esta em
-    # `test_ingest_pattern_validator.py`
+    # Este teste documenta a sobreposição; a garantia de precedência
+    # está em `test_ingest_pattern_validator.py` -- Documenta a sobreposição da regra
+    # de arquivo com padrões de extensão.
     result = rule.match('*.php')
 
     assert result is not None
@@ -47,4 +50,5 @@ def test_also_matches_extension_wildcard_pattern_due_to_permissive_regex(rule):
     '',  # vazio
 ])
 def test_does_not_match_invalid_patterns(rule, pattern):
+    # Retorna `None` para padrões que não representam apenas um nome de arquivo.
     assert rule.match(pattern) is None

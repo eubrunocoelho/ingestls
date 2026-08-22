@@ -23,12 +23,15 @@ def pattern() -> PatternDTO:
 
 
 def test_matches_directory_with_the_exact_name(matcher, pattern):
+    # Caso feliz: um diretório cujo nome bate exatamente com `pattern.value`
+    # deve casar.
     node = DirectoryNode(name='vendor', is_directory=True, children=[])
 
     assert matcher.matches(node, pattern) is True
 
 
 def test_does_not_match_directory_with_a_different_name(matcher, pattern):
+    # Um diretório de nome diferente, mesmo sendo diretório, não deve casar.
     node = DirectoryNode(name='node_modules', is_directory=True, children=[])
 
     assert matcher.matches(node, pattern) is False
@@ -36,7 +39,7 @@ def test_does_not_match_directory_with_a_different_name(matcher, pattern):
 
 def test_never_matches_a_file_even_with_the_exact_same_name(matcher, pattern):
     # Caso adversário: um arquivo chamado literalmente `vendor` (sem extensão)
-    # não pode ser tratado como diretório
+    # não pode ser tratado como diretório.
     node = DirectoryNode(name='vendor', is_directory=False, children=[])
 
     assert matcher.matches(node, pattern) is False
@@ -44,6 +47,8 @@ def test_never_matches_a_file_even_with_the_exact_same_name(matcher, pattern):
 
 def test_ignores_the_directories_own_children_only_compares_the_name(matcher, pattern):
     # O `matcher` não deve se importar com o conteúdo do diretório, só com `nome/tipo`.
+    # Um diretório `vendor` com filhos continua casando normalmente -- a presença
+    # ou não de `children` não interfere na decisão do `DirectoryMatcher`.
     node = DirectoryNode(
         name='vendor',
         is_directory=True,
