@@ -17,6 +17,8 @@ def rule() -> FilenamePatternRule:
     'style.css',
 ])
 def test_matches_valid_filename_patterns(rule, pattern):
+    # Confirma que nomes de arquivo simples (sem caminho, sem coringa) casam,
+    # e que `value`/`pattern` saem idênticos ao padrão original.
     result = rule.match(pattern)
 
     assert result is not None
@@ -32,7 +34,7 @@ def test_also_matches_extension_wildcard_pattern_due_to_permissive_regex(rule):
     # `kind=FILE` em vez de `kind=EXTENSION` é a ORDEM das
     # regras dentro do `IngestPatternValidator` (`ExtensionPatternRule` vem antes).
     # Este teste documenta a sobreposição; a garantia de precedência esta em
-    # `test_ingest_pattern_validator.py`
+    # `test_ingest_pattern_validator.py`.
     result = rule.match('*.php')
 
     assert result is not None
@@ -47,4 +49,6 @@ def test_also_matches_extension_wildcard_pattern_due_to_permissive_regex(rule):
     '',  # vazio
 ])
 def test_does_not_match_invalid_patterns(rule, pattern):
+    # Cobre 5 formatos que essa regra deve rejeitar, cada um delegando
+    # o reconhecimento para outra regra (ou nenhuma).
     assert rule.match(pattern) is None

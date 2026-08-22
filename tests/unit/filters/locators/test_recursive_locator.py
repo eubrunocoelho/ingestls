@@ -10,6 +10,8 @@ from src.filters.matchers.matcher import Matcher
 
 
 class _StubMatcher(Matcher):
+    # `Matcher` falso usado para isolar a lógica do `locator` da `regex/comparação`
+    # real do `matcher`. Registra as chamadas e devolve um valor fixo.
     def __init__(self, return_value: bool):
         self.return_value = return_value
         self.calls: list[tuple[DirectoryNode, PatternDTO]] = []
@@ -41,6 +43,12 @@ def pattern() -> PatternDTO:
     'nested/deep/cache.php',
 ])
 def test_delegates_to_matcher_regardless_of_depth(locator, pattern, current_path):
+    # Confirma que o `RecursiveLocator` delega ao `matcher` em qualquer
+    # profundidade (raiz, 1 nível, 2 níveis) -- assim como o `GlobalLocator`,
+    # ele nunca inspeciona `current_path` para decidir se repassa a chamada.
+    # Hoje `GLOBAL` e `RECURSIVE` tem comportamento de locator idêntico; a
+    # diferença de semântica entre os dois vem do `value` que a `PatternRule`
+    # de origem calcula, não da lógica do locator em si.
     node = DirectoryNode(name='cache.php', is_directory=False, children=[])
     matcher = _StubMatcher(return_value=True)
 
@@ -56,6 +64,8 @@ def test_delegates_to_matcher_regardless_of_depth(locator, pattern, current_path
 
 
 def test_returns_false_when_matcher_returns_false(locator, pattern):
+    # Confirma que o `RecursiveLocator` apenas repassa o resultado do `matcher`,
+    # sem transformar `False` em `True` nem aplicar nenhuma lógica própria.
     node = DirectoryNode(name='readme.md', is_directory=False, children=[])
     matcher = _StubMatcher(return_value=False)
 
@@ -70,6 +80,11 @@ def test_returns_false_when_matcher_returns_false(locator, pattern):
 
 
 def test_integration_with_real_file_matcher_matches_at_any_depth_but_not_wrong_name():
+    # Teste de integração (sem stub): usa o `FileMatcher` real para confirmar
+    # dois comportamentos juntos -- um padrão `*/cache.php` (RECURSIVE) casa
+    # `cache.php` em qualquer profundidade (`nested/deep/cache.php`), mas
+    # continua rejeitando um arquivo de nome diferente (`loader.php`) mesmo
+    # que o caminho também seja profundo (`vendor/package/loader.php`).
     locator = RecursiveLocator()
     matcher = FileMatcher()
     pattern = PatternDTO(

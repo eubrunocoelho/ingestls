@@ -44,7 +44,9 @@ def pattern() -> PatternDTO:
 ])
 def test_delegates_to_matcher_regardless_of_depth(locator, pattern, current_path):
     # Regressão de erro corrigido: `GLOBAL` precisa valer em qualquer profundidade,
-    # não só na raiz.
+    # não só na raiz. Usa o `_StubMatcher` para provar que o `GlobalLocator` sempre
+    # delega ao `matcher` com `node`/`pattern` originais, independente do valor
+    # de `current_path` -- ele nunca inspeciona o caminho para decidir se delega.
     node = DirectoryNode(name='Controller.php', is_directory=False, children=[])
     matcher = _StubMatcher(return_value=True)
 
@@ -60,6 +62,8 @@ def test_delegates_to_matcher_regardless_of_depth(locator, pattern, current_path
 
 
 def test_returns_false_when_matcher_returns_false(locator, pattern):
+    # Confirma que o `GlobalLocator` apenas repassa o resultado do `matcher`,
+    # sem transformar `False` em `True` nem aplicar nenhuma lógica própria.
     node = DirectoryNode(name='style.css', is_directory=False, children=[])
     matcher = _StubMatcher(return_value=False)
 
@@ -74,6 +78,10 @@ def test_returns_false_when_matcher_returns_false(locator, pattern):
 
 
 def test_integration_with_real_extension_matcher_matches_nested_file():
+    # Teste de integração (sem stub): usa o `ExtensionMatcher` de verdade para
+    # confirmar que, na prática real (não só isoladamente), um padrão `*.php`
+    # com escopo `GLOBAL` casa um arquivo `.php` mesmo estando 3 níveis de
+    # profundidade dentro da árvore (`app/Models/User.php`).
     locator = GlobalLocator()
     matcher = ExtensionMatcher()
     pattern = PatternDTO(

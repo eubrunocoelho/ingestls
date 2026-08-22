@@ -29,16 +29,23 @@ def processor() -> PatternSetProcessor:
 
 @pytest.mark.parametrize('pattern', [None, ''])
 def test_returns_empty_list_for_none_or_empty_string(processor, pattern):
+    # `process(None)` e `process('')` devem devolver lista vazia sem tocar
+    # no `validator` -- cobre o `if not pattern: return []` logo no início
+    # do método, antes de qualquer `split`/`strip`.
     assert processor.process(pattern) == []
 
 
 def test_returns_empty_list_for_blank_string(processor):
     # `split(',')` numa string só de espaços gera [' '], que após `strip()` vira
-    # vira '' e é descartado antes de chegar no `validator`.
+    # '' e é descartado antes de chegar no `validator`.
     assert processor.process(pattern='   ') == []
 
 
 def test_parses_all_six_patterns_from_the_ticket_in_order(processor):
+    # Teste principal: processa a string completa do `ticket` de uma vez e
+    # confirma, em ordem, os 3 campos relevantes de cada `PatternDTO` gerado
+    # (`kind`, `scope`, `value`) -- garantindo que os 6 padrões saem na
+    # ordem exata em que apareceram na string original, sem embaralhar.
     raw = '*.php,vendor/,index.php,*/vendor/,*/cache.php,app/cache.php'
 
     result = processor.process(raw)
@@ -67,6 +74,9 @@ def test_parses_all_six_patterns_from_the_ticket_in_order(processor):
 
 
 def test_strips_whitespace_around_items_after_split(processor):
+    # Confirma que espaços ao redor de cada item (antes/depois da vírgula)
+    # são removidos pelo `strip()` -- ` *.php ` vira `*.php`, não fica com
+    # espaço sobrando no `pattern` do `PatternDTO` resultante.
     raw = ' *.php , vendor/ , index.php '
 
     result = processor.process(raw)
@@ -78,6 +88,9 @@ def test_strips_whitespace_around_items_after_split(processor):
 
 
 def test_skips_empty_items_between_consecutive_commas(processor):
+    # Vírgulas duplicadas (`,,`) ou um item que vira uma string vazia após
+    # `strip()` (`   `) devem ser silenciosamente ignorados, sem gerar
+    # `PatternDTO` nenhum nem quebrar o processamento dos itens vizinhos.
     raw = '*.php,,vendor/,   ,index.php'
 
     result = processor.process(raw)
@@ -86,6 +99,9 @@ def test_skips_empty_items_between_consecutive_commas(processor):
 
 
 def test_silently_skips_patterns_that_no_rule_recognizes(processor):
+    # Quando nenhuma `PatternRule` reconhece o item (`validator.validate`
+    # retorna `None`), o processor descarta o item silenciosamente -- sem
+    # levantar exceção -- e continua processando o restante da lista.
     raw = '*.php,???invalid???,vendor/'
 
     result = processor.process(raw)
@@ -95,6 +111,9 @@ def test_silently_skips_patterns_that_no_rule_recognizes(processor):
 
 
 def test_single_pattern_without_commas(processor):
+    # Caso simples: uma única string sem vírgula nenhuma ainda deve produzir
+    # uma lista de um `PatternDTO`, com todos os campos corretamente
+    # preenchidos pela regra que a reconheceu (`ExtensionPatternRule`).
     result = processor.process('*.php')
 
     assert len(result) == 1

@@ -16,6 +16,8 @@ def rule() -> RecursiveDirectoryPatternRule:
     ('*/cache-dir/', 'cache-dir'),
 ])
 def test_matches_valid_recursive_directory_patterns(rule, pattern, expected_value):
+    # Confirma que padrões `*/<diretório>/` casam e que `value` sai sem o
+    # prefixo `*/` nem a barra final -- só o nome do diretório.
     result = rule.match(pattern)
 
     assert result is not None
@@ -32,4 +34,6 @@ def test_matches_valid_recursive_directory_patterns(rule, pattern, expected_valu
     '',  # vazio
 ])
 def test_does_not_match_invalid_patterns(rule, pattern):
+    # Cobre 4 formatos que essa regra deve rejeitar, cada um delegando
+    # o reconhecimento para outra regra (ou nenhuma).
     assert rule.match(pattern) is None

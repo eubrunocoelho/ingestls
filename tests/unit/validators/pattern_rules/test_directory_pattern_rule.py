@@ -17,6 +17,8 @@ def rule() -> DirectoryPatternRule:
     ('v1.0/', 'v1.0'),
 ])
 def test_matches_valid_directory_patterns(rule, pattern, expected_value):
+    # Confirma que nomes de diretório de um único nível, terminados em `/`,
+    # casam corretamente e que `value` sai sem a barra final.
     result = rule.match(pattern)
 
     assert result is not None
@@ -34,4 +36,6 @@ def test_matches_valid_directory_patterns(rule, pattern, expected_value):
     '',  # vazio
 ])
 def test_does_not_match_invalid_patterns(rule, pattern):
+    # Cobre 5 formatos que essa regra deve rejeitar, cada um delegando
+    # o reconhecimento para outra regra (ou nenhuma).
     assert rule.match(pattern) is None

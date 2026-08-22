@@ -21,7 +21,7 @@ class _AlwaysNoneRule(PatternRule):
 
 class _AlwaysMatchRule(PatternRule):
     # `Fake Rule` que sempre casa, usada para provar que a `validator` para na
-    # primeira regra que retorna um resultado (não continua chamando as demais)
+    # primeira regra que retorna um resultado (não continua chamando as demais).
     def __init__(self, tag: str):
         self.tag = tag
         self.calls = 0
@@ -39,7 +39,7 @@ class _AlwaysMatchRule(PatternRule):
 
 @pytest.fixture
 def real_validator() -> IngestPatternValidator:
-    # Mesma ordem usada em `src/container/di_container.py`
+    # Mesma ordem usada em `src/container/di_container.py`.
     return IngestPatternValidator(
         ExtensionPatternRule(),
         FilenamePatternRule(),
@@ -51,12 +51,18 @@ def real_validator() -> IngestPatternValidator:
 
 
 def test_returns_none_when_no_rule_matches():
+    # Usa duas `_AlwaysNoneRule` para confirmar que, quando nenhuma regra
+    # registrada reconhece o padrão, o `validator` devolve `None` -- sem
+    # levantar exceção nem escolher uma regra "por padrão".
     validator = IngestPatternValidator(_AlwaysNoneRule(), _AlwaysNoneRule())
 
     assert validator.validate('???invalid???') is None
 
 
 def test_stops_at_first_rule_that_matches_and_does_not_call_the_rest():
+    # Usa duas `_AlwaysMatchRule` (que sempre casariam) para provar que o
+    # `validator` para assim que a PRIMEIRA regra devolve um resultado --
+    # a segunda regra nunca chega a ser chamada (`second.calls == 0`).
     first = _AlwaysMatchRule(tag='first')
     second = _AlwaysMatchRule(tag='second')
 
@@ -71,6 +77,8 @@ def test_stops_at_first_rule_that_matches_and_does_not_call_the_rest():
 
 
 def test_returns_none_with_no_rules_registered():
+    # Caso extremo: `validator` sem nenhuma regra registrada não deve
+    # quebrar -- só devolve `None` para qualquer padrão.
     validator = IngestPatternValidator()
 
     assert validator.validate('*.php') is None
@@ -91,6 +99,9 @@ def test_resolves_each_pattern_from_the_ticket_to_the_expected_dto(
         expected_scope,
         expected_value
 ):
+    # Teste de integração com as 6 regras reais (não fakes): processa cada
+    # um dos 6 padrões do `ticket` e confirma que o `validator` delega para
+    # a regra correta, produzindo o `PatternDTO` esperado em cada caso.
     result = real_validator.validate(pattern)
 
     assert result is not None
@@ -101,11 +112,10 @@ def test_resolves_each_pattern_from_the_ticket_to_the_expected_dto(
 
 def test_extension_wildcard_resolves_as_extension_and_not_as_filename(real_validator):
     # Trava a precedência entre `ExtensionPatternRule` e `FilenamePatternRule`:
-    # ambas as regras casam com `*.php` (ver `test_filename_pattern_rule.py`),
+    # ambas as regras casam com `*.php` ver (`test_filename_pattern_rule.py`),
     # mas a ordem de registro no `validator` deve garantir `kind=EXTENSION`.
     # Se este teste quebrar, a ordem das regras no `di_container.py` mudou
-    # (ou a `regex` de `FilenamePatternRule` foi alterada) e o comportamento
-    # de `matching` por extensão está comprometido
+    # de `matching` por extensão e está comprometido.
     result = real_validator.validate('*.php')
 
     assert result is not None

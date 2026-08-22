@@ -16,6 +16,8 @@ def rule() -> RecursiveFilenamePatternRule:
     ('*/README.md', 'README.md'),
 ])
 def test_matches_valid_recursive_filename_patterns(rule, pattern, expected_value):
+    # Confirma que padrões `*/<arquivo>` casam e que `value` sai sem o
+    # prefixo `*/` -- só o nome do arquivo.
     result = rule.match(pattern)
 
     assert result is not None
@@ -32,4 +34,6 @@ def test_matches_valid_recursive_filename_patterns(rule, pattern, expected_value
     '',  # vazio
 ])
 def test_does_not_match_invalid_patterns(rule, pattern):
+    # Cobre 4 formatos que essa regra deve rejeitar, cada um delegando
+    # o reconhecimento para outra regra (ou nenhuma).
     assert rule.match(pattern) is None
