@@ -1,7 +1,7 @@
 from src.dtos.github_url_dto import GitHubURLDTO
 from src.enums.github_url_type_enum import GitHubURLTypeEnum
-from src.github.parsers.github_url_parser import GitHubURLParser
-from src.github.resolvers.github_ref_resolver import GitHubRefResolver
+from src.integrations.github_url_parser import GitHubURLParser
+from src.integrations.github_ref_resolver import GitHubRefResolver
 
 
 class GitHubURLProcessor:

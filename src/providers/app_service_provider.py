@@ -13,8 +13,8 @@ from src.filesystem.windows_file_reader import WindowsFileReader
 from src.filters.factories.locator_factory import LocatorFactory
 from src.filters.factories.matcher_factory import MatcherFactory
 from src.filters.tree_filter import TreeFilter
-from src.github.parsers.github_url_parser import GitHubURLParser
-from src.github.resolvers.github_ref_resolver import GitHubRefResolver
+from src.integrations.github_url_parser import GitHubURLParser
+from src.integrations.github_ref_resolver import GitHubRefResolver
 from src.integrations.github_repository_cloner import GitHubRepositoryCloner
 from src.processors.github_url_processor import GitHubURLProcessor
 from src.processors.pattern_set_processor import PatternSetProcessor
