@@ -2,6 +2,7 @@ import os
 import shutil
 import stat
 import tempfile
+import time
 from pathlib import Path
 
 from dulwich import porcelain
@@ -46,11 +47,16 @@ class GitHubRepositoryCloner:
                 GitHubURLTypeEnum.BRANCH,
                 GitHubURLTypeEnum.TAG,
             }:
-                clone_kwargs['branch'] = ref.encode()
+                clone_kwargs['branch'] = ref
 
             repo = porcelain.clone(**clone_kwargs)
 
             if ref and ref_type == GitHubURLTypeEnum.COMMIT:
+                if repo is None:
+                    raise RuntimeError(
+                        'O repositório não foi inicializado.'
+                    )
+
                 porcelain.checkout(
                     repo,
                     ref.encode(),
@@ -72,17 +78,35 @@ class GitHubRepositoryCloner:
             if not success:
                 self.cleanup(target)
 
-    def cleanup(self, target: Path) -> None:
+    def cleanup(
+            self,
+            target: Path,
+            retries: int = 5,
+            delay: float = 0.2,
+    ) -> None:
         if not target.exists():
             return
 
-        shutil.rmtree(
-            target,
-            onexc=self._force_remove_readonly
-        )
+        for attempt in range(retries):
+            try:
+                shutil.rmtree(
+                    target,
+                    onexc=self._force_remove_readonly,
+                )
+
+                return
+
+            except PermissionError as error:
+                if getattr(error, 'winerror', None) != 32:
+                    raise
+
+                if attempt == retries - 1:
+                    raise
+
+                time.sleep(delay)
 
     @staticmethod
-    def _force_remove_readonly(func, path, exc) -> None:
+    def _force_remove_readonly(func, path, _exc) -> None:
         os.chmod(
             path,
             stat.S_IWRITE
