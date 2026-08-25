@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
-from typing import Any, TypeVar, Generic
+from typing import TypeVar, Generic
 
+from src.dtos.file_read_result_dto import FileReadResultDTO
 from src.providers.ingest_summary_provider import IngestSummaryProvider
 from src.dtos.ingest_response_dto import IngestResponseDTO
 from src.dtos.ingest_request_dto import IngestRequestDTO
@@ -47,17 +48,31 @@ class IngestStrategy(ABC, Generic[TTarget]):
                 patterns=pattern
             )
 
-            directory_structure = self.directory_tree_renderer.render_tree(directory_tree)
-            file_content = self._read_files(target, directory_tree)
+            directory_structure = (
+                self.directory_tree_renderer.render_tree(
+                    directory_tree
+                )
+            )
+
+            read_result = self._read_files(
+                target,
+                directory_tree,
+            )
 
             summary = self.ingest_summary_provider.build(
                 target_label=self._describe_target(target),
                 directory_tree=directory_tree,
                 directory_structure=directory_structure,
-                files_content=file_content,
+                files_content=read_result.content,
+                code_line_count=read_result.code_line_count,
+                github_reference=self._describe_reference(target),
             )
 
-            return IngestResponseDTO(summary, directory_structure, file_content)
+            return IngestResponseDTO(
+                summary=summary,
+                directory_structure=directory_structure,
+                files_content=read_result.content,
+            )
         finally:
             self._cleanup(target)
 
@@ -70,11 +85,14 @@ class IngestStrategy(ABC, Generic[TTarget]):
         pass
 
     @abstractmethod
-    def _read_files(self, target: TTarget, directory_tree: DirectoryNode) -> str:
+    def _read_files(self, target: TTarget, directory_tree: DirectoryNode) -> FileReadResultDTO:
         pass
 
     def _describe_target(self, target: TTarget) -> str:
         pass
+
+    def _describe_reference(self, target: TTarget) -> str | None:
+        return None
 
     def _cleanup(self, target: TTarget) -> None:
         pass

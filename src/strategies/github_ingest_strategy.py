@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from src.dtos.file_read_result_dto import FileReadResultDTO
 from src.providers.ingest_summary_provider import IngestSummaryProvider
 from src.dtos.github_url_dto import GitHubURLDTO
 from src.dtos.ingest_request_dto import IngestRequestDTO
@@ -30,7 +31,13 @@ class GitHubIngestStrategy(IngestStrategy[tuple[GitHubURLDTO, Path]]):
             ingest_summary_provider: IngestSummaryProvider,
 
     ):
-        super().__init__(pattern_set_processor, tree_filter, directory_tree_renderer, ingest_summary_provider)
+        super().__init__(
+            pattern_set_processor,
+            tree_filter,
+            directory_tree_renderer,
+            ingest_summary_provider
+        )
+
         self.url_processor = url_processor
         self.repository_cloner = repository_cloner
         self.directory_scanner = directory_scanner
@@ -41,15 +48,20 @@ class GitHubIngestStrategy(IngestStrategy[tuple[GitHubURLDTO, Path]]):
 
     def _resolve_target(self, dto: IngestRequestDTO) -> tuple[GitHubURLDTO, Path]:
         url_dto = self.url_processor.process(dto.path)
+
         clone_url = f'{GITHUB_URL_PREFIX}{url_dto.owner}/{url_dto.repository}.git'
+
         local_path = self.repository_cloner.clone(clone_url, ref=url_dto.reference)
 
         return url_dto, local_path
 
     def _scan(self, target: tuple[GitHubURLDTO, Path]) -> DirectoryNode:
         url_dto, local_path = target
+
         directory_tree = self.directory_scanner.read(local_path)
+
         directory_tree.name = url_dto.repository
+
         directory_tree.children = [
             child for child in directory_tree.children if child.name != _GIT_DIR_NAME
         ]
@@ -59,13 +71,31 @@ class GitHubIngestStrategy(IngestStrategy[tuple[GitHubURLDTO, Path]]):
 
         return directory_tree
 
-    def _read_files(self, target: tuple[GitHubURLDTO, Path], directory_tree: DirectoryNode) -> str:
+    def _read_files(
+            self,
+            target: tuple[GitHubURLDTO, Path],
+            directory_tree: DirectoryNode
+    ) -> FileReadResultDTO:
         return self.file_reader.read(directory_tree)
 
     def _describe_target(self, target: tuple[GitHubURLDTO, Path]) -> str:
         url_dto, _ = target
 
         return f'{url_dto.owner}/{url_dto.repository}'
+
+    def _describe_reference(
+            self,
+            target: tuple[GitHubURLDTO, Path],
+    ) -> str | None:
+        url_dto, _ = target
+
+        if url_dto.reference is None:
+            return None
+
+        return (
+            f'<{url_dto.type.value}>'
+            f'`{url_dto.reference}`'
+        )
 
     def _cleanup(self, target: tuple[GitHubURLDTO, Path]) -> None:
         _, local_path = target
@@ -76,7 +106,13 @@ class GitHubIngestStrategy(IngestStrategy[tuple[GitHubURLDTO, Path]]):
         node = root
 
         for segment in path.split('/'):
-            match = next((child for child in node.children if child.name == segment), None)
+            match = next(
+                (
+                    child for child in node.children
+                    if child.name == segment
+                ),
+                None
+            )
 
             if match is None or not match.is_directory:
                 raise ValueError(f'Caminho não encontrado no repositório: {path}')

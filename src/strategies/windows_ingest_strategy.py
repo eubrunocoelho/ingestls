@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from src.dtos.file_read_result_dto import FileReadResultDTO
 from src.providers.ingest_summary_provider import IngestSummaryProvider
 from src.filesystem.directory_node import DirectoryNode
 from src.filesystem.windows_directory_scanner import WindowsDirectoryScanner
@@ -34,7 +35,7 @@ class WindowsIngestStrategy(IngestStrategy[Path]):
     def _scan(self, target: Path) -> DirectoryNode:
         return self.directory_scanner.read(target)
 
-    def _read_files(self, target: Path, directory_tree: DirectoryNode) -> str:
+    def _read_files(self, target: Path, directory_tree: DirectoryNode) -> FileReadResultDTO:
         return self.file_reader.read(directory_tree)
 
     def _describe_target(self, target: Path) -> str:
