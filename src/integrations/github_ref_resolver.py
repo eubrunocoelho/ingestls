@@ -1,6 +1,7 @@
 import re
 
 from dulwich import porcelain
+
 from src.enums.github_url_type_enum import GitHubURLTypeEnum
 from src.exceptions.github.github_api_exception import GitHubAPIException
 from src.integrations.github_constants import GITHUB_URL_PREFIX
@@ -14,47 +15,112 @@ class GitHubRefResolver:
             owner: str,
             repository: str,
             segments: tuple[str, ...]
-    ) -> tuple[GitHubURLTypeEnum, str, str | None]:
+    ) -> tuple[
+        GitHubURLTypeEnum,
+        str,
+        str | None
+    ]:
         if not segments:
-            raise GitHubAPIException('Nenhuma referência informada.')
+            raise GitHubAPIException(
+                'Nenhuma referência informada.'
+            )
 
+        # Commit SHA
         if _SHA_PATTERN.fullmatch(segments[0]):
-            return GitHubURLTypeEnum.COMMIT, segments[0], self._make_path(segments[1:])
+            return (
+                GitHubURLTypeEnum.COMMIT,
+                segments[0],
+                self._make_path(segments[1:]),
+            )
 
-        url = f'{GITHUB_URL_PREFIX}{owner}/{repository}'
+        url = (
+            f'{GITHUB_URL_PREFIX}'
+            f'{owner}/'
+            f'{repository}'
+        )
 
         try:
             refs = porcelain.ls_remote(url).refs
+
         except Exception as error:
             raise GitHubAPIException(
-                f'Falha ao listar referências de {owner}/{repository}: {error}'
+                f'Falha ao listar referências de '
+                f'{owner}/{repository}: {error}'
             ) from error
 
-        branches = self._ref_names(refs, b'refs/heads/')
-        tags = self._ref_names(refs, b'refs/tags/')
+        branches = self._ref_names(
+            refs,
+            b'refs/heads/'
+        )
 
-        for index in range(len(segments), 0, -1):
-            candidate = '/'.join(segments[:index])
-            path = self._make_path(segments[index:])
+        tags = self._ref_names(
+            refs,
+            b'refs/tags/'
+        )
+
+        # Tenta encontrar a maior referência possível.
+        #
+        # Exemplo:
+        #
+        # `/tree/feature/foo/src`
+        #
+        # Primeiro:
+        # `feature/foo/src`
+        #
+        # Depois:
+        # `feature/foo`
+        #
+        # Quando encontrar uma referência,
+        # o restante vira `path`.
+        for index in range(
+                len(segments), 0, -1,
+        ):
+            candidate = '/'.join(
+                segments[:index]
+            )
+
+            path = self._make_path(
+                segments[index:]
+            )
 
             if candidate in branches:
-                return GitHubURLTypeEnum.BRANCH, candidate, path
+                return (
+                    GitHubURLTypeEnum.BRANCH,
+                    candidate,
+                    path,
+                )
 
             if candidate in tags:
-                return GitHubURLTypeEnum.TAG, candidate, path
+                return (
+                    GitHubURLTypeEnum.TAG,
+                    candidate,
+                    path,
+                )
 
         raise GitHubAPIException(
-            f'Referência não encontrada em {owner}/{repository}: {segments[0]}'
+            f'Referência não encontrada em '
+            f'{owner}/{repository}: '
+            f'{" / ".join(segments)}'
         )
 
     @staticmethod
-    def _ref_names(refs: dict, prefix: bytes) -> set[str]:
+    def _ref_names(
+            refs: dict,
+            prefix: bytes
+    ) -> set[str]:
         return {
-            name.decode().removeprefix(prefix.decode())
+            name.decode().removeprefix(
+                prefix.decode()
+            )
             for name in refs
             if name.startswith(prefix)
         }
 
     @staticmethod
-    def _make_path(segments: tuple[str, ...]) -> str | None:
-        return '/'.join(segments) if segments else None
+    def _make_path(
+            segments: tuple[str, ...]
+    ) -> str | None:
+        if not segments:
+            return None
+
+        return '/'.join(segments)

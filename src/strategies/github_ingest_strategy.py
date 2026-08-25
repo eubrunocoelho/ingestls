@@ -49,25 +49,43 @@ class GitHubIngestStrategy(IngestStrategy[tuple[GitHubURLDTO, Path]]):
     def _resolve_target(self, dto: IngestRequestDTO) -> tuple[GitHubURLDTO, Path]:
         url_dto = self.url_processor.process(dto.path)
 
-        clone_url = f'{GITHUB_URL_PREFIX}{url_dto.owner}/{url_dto.repository}.git'
+        clone_url = (
+            f'{GITHUB_URL_PREFIX}'
+            f'{url_dto.owner}/'
+            f'{url_dto.repository}'
+        )
 
-        local_path = self.repository_cloner.clone(clone_url, ref=url_dto.reference)
+        local_path = self.repository_cloner.clone(
+            url=clone_url,
+            ref=url_dto.reference,
+            ref_type=url_dto.type,
+        )
 
         return url_dto, local_path
 
-    def _scan(self, target: tuple[GitHubURLDTO, Path]) -> DirectoryNode:
+    def _scan(
+            self,
+            target: tuple[GitHubURLDTO, Path]
+    ) -> DirectoryNode:
         url_dto, local_path = target
 
-        directory_tree = self.directory_scanner.read(local_path)
+        directory_tree = self.directory_scanner.read(
+            local_path
+        )
 
         directory_tree.name = url_dto.repository
 
         directory_tree.children = [
-            child for child in directory_tree.children if child.name != _GIT_DIR_NAME
+            child
+            for child in directory_tree.children
+            if child.name != _GIT_DIR_NAME
         ]
 
         if url_dto.path:
-            directory_tree = self._narrow_to_path(directory_tree, url_dto.path)
+            directory_tree = self._narrow_to_path(
+                directory_tree,
+                url_dto.path
+            )
 
         return directory_tree
 
@@ -81,7 +99,10 @@ class GitHubIngestStrategy(IngestStrategy[tuple[GitHubURLDTO, Path]]):
     def _describe_target(self, target: tuple[GitHubURLDTO, Path]) -> str:
         url_dto, _ = target
 
-        return f'{url_dto.owner}/{url_dto.repository}'
+        return (
+            f'{url_dto.owner}/'
+            f'{url_dto.repository}'
+        )
 
     def _describe_reference(
             self,
@@ -99,10 +120,15 @@ class GitHubIngestStrategy(IngestStrategy[tuple[GitHubURLDTO, Path]]):
 
     def _cleanup(self, target: tuple[GitHubURLDTO, Path]) -> None:
         _, local_path = target
-        self.repository_cloner.cleanup(local_path)
+        self.repository_cloner.cleanup(
+            local_path
+        )
 
     @staticmethod
-    def _narrow_to_path(root: DirectoryNode, path: str) -> DirectoryNode:
+    def _narrow_to_path(
+            root: DirectoryNode,
+            path: str
+    ) -> DirectoryNode:
         node = root
 
         for segment in path.split('/'):
@@ -115,7 +141,9 @@ class GitHubIngestStrategy(IngestStrategy[tuple[GitHubURLDTO, Path]]):
             )
 
             if match is None or not match.is_directory:
-                raise ValueError(f'Caminho não encontrado no repositório: {path}')
+                raise ValueError(
+                    f'Caminho não encontrado no repositório: {path}'
+                )
 
             node = match
 

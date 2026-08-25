@@ -31,17 +31,28 @@ class IngestStrategy(ABC, Generic[TTarget]):
     def supports(self, dto: IngestRequestDTO) -> bool:
         pass
 
-    def ingest(self, dto: IngestRequestDTO) -> IngestResponseDTO:
-        pattern = self.pattern_set_processor.process(dto.pattern)
+    def ingest(
+            self,
+            dto: IngestRequestDTO
+    ) -> IngestResponseDTO:
+        pattern = self.pattern_set_processor.process(
+            dto.pattern
+        )
+
         target = self._resolve_target(dto)
 
         try:
             directory_tree = self._scan(target)
 
             method_name = STRATEGY_METHOD_BY_PATTERN_TYPE.get(
-                dto.pattern_type, 'exclude'
+                dto.pattern_type,
+                'exclude'
             )
-            method = getattr(self.tree_filter, method_name)
+
+            method = getattr(
+                self.tree_filter,
+                method_name
+            )
 
             directory_tree = method(
                 root=directory_tree,
@@ -73,6 +84,7 @@ class IngestStrategy(ABC, Generic[TTarget]):
                 directory_structure=directory_structure,
                 files_content=read_result.content,
             )
+
         finally:
             self._cleanup(target)
 
