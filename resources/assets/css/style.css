@@ -89,6 +89,22 @@
   --section-output-result-icon-success-bg-color: #dcf0e2;
   --section-output-result-icon-success-color: #1f883d;
 
+  --alert-primary-bg-color: #cce5ff;
+  --alert-primary-border-color: #b8daff;
+  --alert-primary-color: #004085;
+
+  --alert-danger-bg-color: #f8d7da;
+  --alert-danger-border-color: #f5c6cb;
+  --alert-danger-color: #721c24;
+
+  --alert-warning-bg-color: #fff3cd;
+  --alert-warning-border-color: #ffeeba;
+  --alert-warning-color: #856404;
+
+  --alert-success-bg-color: #d4edda;
+  --alert-success-border-color: #c3e6cb;
+  --alert-success-color: #155724;
+
   --footer-bg-color: #ffffff;
   --footer-border-color: #d1d9e0;
 }
@@ -283,21 +299,19 @@ body {
   background: var(--main-section-bg-color);
   border: 1px solid var(--main-section-border-color);
   border-radius: 8px;
+  display: flex;
+  flex-direction: column;
   margin: 0 auto 35px;
   max-width: 762px;
   min-width: 0;
   padding: 22px 20px 22px 20px;
+  row-gap: 20px;
   width: 100%;
 }
 
 .main__section:only-child,
 .main__section:last-child {
   margin-bottom: 0 !important;
-}
-
-.main__section--output {
-  display: flex;
-  flex-direction: column;
 }
 
 /*========== Section Form ==========*/
@@ -707,6 +721,43 @@ body {
 
 .section-output__button:active .section-output__button-icon {
   color: var(--section-output-button-icon-active-color);
+}
+
+/*========== Alerts ==========*/
+.alerts {
+  display: flex;
+  flex-direction: column;
+  row-gap: 20px;
+  width: 100%;
+}
+
+.alert {
+  background: var(--alert-primary-bg-color);
+  border: 1px solid var(--alert-primary-border-color);
+  border-radius: 8px;
+  color: var(--alert-primary-color);
+  font-family: var(--font-open-sans);
+  font-size: 17px;
+  font-weight: 500;
+  padding: 20px 20px 20px 20px;
+}
+
+.alert--danger {
+  background: var(--alert-danger-bg-color) !important;
+  border-color: var(--alert-danger-border-color) !important;
+  color: var(--alert-danger-color) !important;
+}
+
+.alert--warning {
+  background: var(--alert-warning-bg-color) !important;
+  border-color: var(--alert-warning-border-color) !important;
+  color: var(--alert-warning-color) !important;
+}
+
+.alert--success {
+  background: var(--alert-success-bg-color) !important;
+  border-color: var(--alert-success-border-color) !important;
+  color: var(--alert-success-color) !important;
 }
 
 /*========== Footer ==========*/
