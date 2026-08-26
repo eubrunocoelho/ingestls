@@ -1,7 +1,7 @@
 from pathlib import PureWindowsPath
 from pydantic import BaseModel, ConfigDict, field_validator
 
-from src.integrations.github_constants import GITHUB_URL_PREFIX
+from src.integrations.github_url import GITHUB_URL_PREFIX
 from src.enums.pattern_type_enum import PatternTypeEnum
 
 

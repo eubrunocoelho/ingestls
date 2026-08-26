@@ -4,7 +4,7 @@ from src.filesystem.content_inspector import ContentInspector
 
 
 class FileInspector:
-    BINARY_CHECK_CHUNK_SIZE = 8192
+    _BINARY_CHECK_CHUNK_SIZE = 8192
 
     def __init__(self, content_inspector: ContentInspector):
         self.content_inspector = content_inspector
@@ -12,7 +12,7 @@ class FileInspector:
     def is_binary(self, file_path: Path) -> bool:
         try:
             with file_path.open('rb') as handle:
-                content = handle.read(self.BINARY_CHECK_CHUNK_SIZE)
+                content = handle.read(self._BINARY_CHECK_CHUNK_SIZE)
         except OSError:
             return True
 

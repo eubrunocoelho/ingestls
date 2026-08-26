@@ -3,7 +3,6 @@ FILE_START = (
     'PATH: {path}\n'
     '--------------------------------'
 )
-
 FILE_END = '<<<FILE END>>>'
 
 BINARY_FILE_FLAG = '[Binary File]'

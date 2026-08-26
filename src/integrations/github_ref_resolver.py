@@ -4,12 +4,12 @@ from dulwich import porcelain
 
 from src.enums.github_url_type_enum import GitHubURLTypeEnum
 from src.exceptions.github.github_api_exception import GitHubAPIException
-from src.integrations.github_constants import GITHUB_URL_PREFIX
-
-_SHA_PATTERN = re.compile(r'^[0-9a-fA-F]{40}$')
+from src.integrations.github_url import GITHUB_URL_PREFIX
 
 
 class GitHubRefResolver:
+    _SHA_PATTERN = re.compile(r'^[0-9a-fA-F]{40}$')
+
     def resolve(
             self,
             owner: str,
@@ -26,7 +26,7 @@ class GitHubRefResolver:
             )
 
         # Commit SHA
-        if _SHA_PATTERN.fullmatch(segments[0]):
+        if self._SHA_PATTERN.fullmatch(segments[0]):
             return (
                 GitHubURLTypeEnum.COMMIT,
                 segments[0],

@@ -3,7 +3,7 @@ from pathlib import Path
 from src.dtos.file_read_result_dto import FileReadResultDTO
 from src.filesystem.directory_node import DirectoryNode
 from src.filesystem.file_inspector import FileInspector
-from src.filesystem.ingest_format import EMPTY_FILE_FLAG, BINARY_FILE_FLAG, FILE_START, FILE_END
+from src.filesystem.file_output_format import EMPTY_FILE_FLAG, BINARY_FILE_FLAG, FILE_START, FILE_END
 
 
 class WindowsFileReader:

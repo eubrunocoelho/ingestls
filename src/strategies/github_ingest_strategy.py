@@ -10,15 +10,15 @@ from src.filesystem.windows_directory_scanner import WindowsDirectoryScanner
 from src.filesystem.windows_file_reader import WindowsFileReader
 from src.filters.tree_filter import TreeFilter
 from src.integrations.github_repository_cloner import GitHubRepositoryCloner
-from src.integrations.github_constants import GITHUB_URL_PREFIX
+from src.integrations.github_url import GITHUB_URL_PREFIX
 from src.processors.github_url_processor import GitHubURLProcessor
 from src.processors.pattern_set_processor import PatternSetProcessor
 from src.strategies.ingest_strategy import IngestStrategy
 
-_GIT_DIR_NAME = '.git'
-
 
 class GitHubIngestStrategy(IngestStrategy[tuple[GitHubURLDTO, Path]]):
+    _GIT_DIR_NAME = '.git'
+
     def __init__(
             self,
             pattern_set_processor: PatternSetProcessor,
@@ -78,7 +78,7 @@ class GitHubIngestStrategy(IngestStrategy[tuple[GitHubURLDTO, Path]]):
         directory_tree.children = [
             child
             for child in directory_tree.children
-            if child.name != _GIT_DIR_NAME
+            if child.name != self._GIT_DIR_NAME
         ]
 
         if url_dto.path:
