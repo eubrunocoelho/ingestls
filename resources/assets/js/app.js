@@ -1,4 +1,6 @@
-import { clearAlerts, showAlert } from './alert.js';
+import { clearAlerts, showAlerts } from './modules/alert.js';
+import { getFormData } from './modules/form.js';
+import { getErrorMessages, ingest } from './modules/ingest.js';
 
 const form = document.getElementById('ingest-form');
 
@@ -7,43 +9,21 @@ form.addEventListener('submit', async (event) => {
 
 	clearAlerts();
 
-	const formData = new FormData(form);
-
-	const data = {
-		path: formData.get('path'),
-		pattern_type: formData.get('pattern-type'),
-		pattern: formData.get('pattern'),
-	};
+	const data = getFormData(form);
 
 	try {
-		const response = await fetch('/ingest', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify(data),
-		});
-
-		const result = await response.json();
+		const { response, result } = await ingest(data);
 
 		if (response.status !== 201) {
-			if (result.errors?.length) {
-				result.errors.forEach((error) => {
-					showAlert(error.message);
-				});
-			} else {
-				showAlert(result.message ?? 'Ocorreu um erro ao processar a requisição.');
-			}
+			showAlerts(getErrorMessages(result));
 
 			return;
 		}
-
-		clearAlerts();
 
 		console.log(result);
 	} catch (error) {
 		console.error(error);
 
-		showAlert('Não foi possível conectar ao servidor.');
+		showAlerts(['Não foi possível conectar ao servidor.']);
 	}
 });

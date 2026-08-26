@@ -5,20 +5,21 @@ function getAlerts() {
 }
 
 function createAlerts() {
-	let alerts = getAlerts();
+	const alerts = document.createElement('div');
 
-	if (!alerts) {
-		alerts = document.createElement('div');
-		alerts.className = 'alerts';
+	alerts.className = 'alerts';
 
-		form.insertAdjacentElement('afterend', alerts);
-	}
+	form.insertAdjacentElement('afterend', alerts);
 
 	return alerts;
 }
 
+function getOrCreatAlerts() {
+	return getAlerts() ?? createAlerts();
+}
+
 export function showAlert(message, type = 'danger') {
-	const alerts = createAlerts();
+	const alerts = getOrCreatAlerts();
 
 	const alert = document.createElement('div');
 
@@ -28,10 +29,10 @@ export function showAlert(message, type = 'danger') {
 	alerts.appendChild(alert);
 }
 
-export function clearAlerts() {
-	const alerts = getAlerts();
+export function showAlerts(messages, type = 'danger') {
+	messages.forEach((message) => showAlert(message, type));
+}
 
-	if (alerts) {
-		alerts.remove();
-	}
+export function clearAlerts() {
+	getAlerts()?.remove();
 }
