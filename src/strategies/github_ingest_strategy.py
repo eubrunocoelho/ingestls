@@ -1,4 +1,5 @@
 from pathlib import Path
+import logging
 
 from src.dtos.file_read_result_dto import FileReadResultDTO
 from src.providers.ingest_summary_provider import IngestSummaryProvider
@@ -14,6 +15,8 @@ from src.integrations.github_url import GITHUB_URL_PREFIX
 from src.processors.github_url_processor import GitHubURLProcessor
 from src.processors.pattern_set_processor import PatternSetProcessor
 from src.strategies.ingest_strategy import IngestStrategy
+
+logger = logging.getLogger(__name__)
 
 
 class GitHubIngestStrategy(IngestStrategy[tuple[GitHubURLDTO, Path]]):
@@ -120,9 +123,18 @@ class GitHubIngestStrategy(IngestStrategy[tuple[GitHubURLDTO, Path]]):
 
     def _cleanup(self, target: tuple[GitHubURLDTO, Path]) -> None:
         _, local_path = target
-        self.repository_cloner.cleanup(
-            local_path
-        )
+
+        try:
+            self.repository_cloner.cleanup(
+                local_path
+            )
+
+        except Exception:
+            logger.warning(
+                'Falha ao limpar diretório temporário %s (será removido depois).',
+                local_path,
+                exc_info=True
+            )
 
     @staticmethod
     def _narrow_to_path(
