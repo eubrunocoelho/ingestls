@@ -1,8 +1,12 @@
 import { clearAlerts, showAlerts } from './modules/alert.js';
 import { getFormData } from './modules/form.js';
 import { getErrorMessages, ingest } from './modules/ingest.js';
+import { hideOutput, showOutput } from './modules/output.js';
+
 
 const form = document.getElementById('ingest-form');
+
+let output = null;
 
 form.addEventListener('submit', async (event) => {
 	event.preventDefault();
@@ -20,7 +24,9 @@ form.addEventListener('submit', async (event) => {
 			return;
 		}
 
-		console.log(result);
+		output = result;
+
+		showOutput(output);
 	} catch (error) {
 		console.error(error);
 

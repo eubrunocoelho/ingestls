@@ -532,6 +532,10 @@ body {
 }
 
 /*========== Section Output ==========*/
+#output {
+  display: none;
+}
+
 .output-wrapper {
   display: flex;
   flex-direction: column;
@@ -582,7 +586,7 @@ body {
   min-height: 180px;
 }
 
-.section-output__result--file-content {
+.section-output__result--files-content {
   height: 248px !important;
 }
 
@@ -845,7 +849,7 @@ body {
     min-height: 0;
   }
 
-  .section-output__result--file-content {
+  .section-output__result--files-content {
     height: 600px !important;
   }
 }
