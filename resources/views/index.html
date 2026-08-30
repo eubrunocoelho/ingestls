@@ -1,168 +1,147 @@
 <!doctype html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ingestl</title>
-    <link rel="stylesheet" href="/assets/css/style.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.0/css/all.min.css"
-      integrity="sha512-ApSLB1Pd3/bZN8fWB/RG9YhN/7bd9Hkf3AGaE2mPfebjrxagjuBtx2GcgdqIlJkUzwylBo61r9Xa9NmgBI0swA=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-    <script type="module" src="/assets/js/app.js"></script>
-  </head>
-  <body>
-    <header class="header u-fluid-padding">
-      <div class="header__inner">
-        <div class="header__logo"></div>
-        <nav class="header__links">
-          <ul class="header__links-list">
-            <li class="header__links-item">
-              <span class="header__links-icon header__links-icon--github"
-                ><i class="fa-brands fa-github"></i
-              ></span>
-              <a href="#" class="header__links-link">GitHub</a>
-            </li>
-            <li class="header__links-item">
-              <span class="header__links-icon header__links-icon--star"
-                ><i class="fa-solid fa-star"></i
-              ></span>
-              <span class="header__links-text">1</span>
-            </li>
-          </ul>
-        </nav>
-      </div>
-    </header>
-    <main class="main u-fluid-padding">
-      <hgroup class="main__heading">
-        <h1 class="main__title">
-          Ingest<span class="u-special-char">ls</span>
-        </h1>
-        <h3 class="main__subtitle">
-          Faça o digest do seu código-fonte otimizado para IA.
-        </h3>
-      </hgroup>
-      <p class="main__description">
-        Transforme todo seu código-fonte de um diretório ou repositório do
-        GitHub em formato de texto simples. O Ingestls é ideal para estruturar
-        seu projeto como insumo de contexto para LLMs.
-      </p>
-      <section class="main__section">
-        <form class="section__form" id="ingest-form" action="/ingest">
-          <div class="section-form__column">
-            <input
-              type="text"
-              id="path"
-              name="path"
-              class="section-form__input-text"
-              placeholder="URL ou Diretório"
-            />
-          </div>
-          <div class="section-form__grid">
-            <div class="section-form__select-wrapper">
-              <select
-                id="pattern-type"
-                name="pattern-type"
-                class="section-form__select"
-              >
-                <option value="exclude" selected>Excluir</option>
-                <option value="include">Incluir</option>
-              </select>
-              <span class="section-form__select-icon">
-                <i class="fa-solid fa-caret-down"></i>
-              </span>
-            </div>
-            <input
-              type="text"
-              id="pattern"
-              name="pattern"
-              class="section-form__input-text"
-              placeholder="*.md, node_modules/, .env"
-            />
-            <button type="submit" class="section-form__button">
-              <span class="section-form__button-icon-box">
-                <i class="fa-solid fa-file-code section-form__button-icon"></i>
-              </span>
-              Ingest
-            </button>
-          </div>
-        </form>
-      </section>
-      <section id="output" class="main__section">
-        <div class="loading-wrapper">
-          <img src="/assets/img/loader.svg" />
-        </div>
-        <div class="output-wrapper">
-          <div class="section-output__column">
-            <div class="section-output__item section-output__item--summary">
-              <hgroup class="section-output__heading">
-                <h5 class="section-output__title">Resumo</h5>
-              </hgroup>
-              <div
-                class="section-output__result section-output__result--summary"
-              >
-                <span class="section-output__copy-icon-box">
-                  <i class="fa-solid fa-copy section-output__copy-icon"></i>
-                </span>
-                <div class="section-output__result-scroll">
-                  <pre><code id="result-summary"></code></pre>
-                </div>
-              </div>
-              <div class="section-output__buttons">
-                <a href="javascript:void(0);" class="section-output__button">
-                  <span class="section-output__button-icon-box"
-                    ><i
-                      class="fa-solid fa-copy section-output__button-icon"
-                    ></i>
-                  </span>
-                  Copiar
-                </a>
-              </div>
-            </div>
-            <div class="section-output__item section-output__item--structure">
-              <hgroup class="section-output__heading">
-                <h5 class="section-output__title">Estrutura de Diretório</h5>
-              </hgroup>
-              <div
-                class="section-output__result section-output__result--structure"
-              >
-                <span class="section-output__copy-icon-box">
-                  <i class="fa-solid fa-copy section-output__copy-icon"></i>
-                </span>
-                <div class="section-output__result-scroll">
-                  <pre><code id="result-structure"></code></pre>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="section-output__item">
-            <hgroup class="section-output__heading">
-              <h5 class="section-output__title">Conteúdo dos Arquivos</h5>
-            </hgroup>
-            <div
-              class="section-output__result section-output__result--files-content"
-            >
-              <span class="section-output__copy-icon-box">
-                <i class="fa-solid fa-copy section-output__copy-icon"></i>
-              </span>
-              <div class="section-output__result-scroll">
-                <pre><code id="result-files-content"></code></pre>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
-    <footer class="footer u-fluid-padding">
-      <div class="footer__inner">
-        <p class="footer__copy">
-          © 2026 <a href="#" class="footer__copy-link">Ingestls</a>. Todos os
-          Direitos Reservados
-        </p>
-      </div>
-    </footer>
-  </body>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Ingestl</title>
+		<link rel="stylesheet" href="/assets/css/style.css" />
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.0/css/all.min.css"
+			integrity="sha512-ApSLB1Pd3/bZN8fWB/RG9YhN/7bd9Hkf3AGaE2mPfebjrxagjuBtx2GcgdqIlJkUzwylBo61r9Xa9NmgBI0swA=="
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		/>
+		<script type="module" src="/assets/js/app.js"></script>
+	</head>
+	<body>
+		<header class="header u-fluid-padding">
+			<div class="header__inner">
+				<div class="header__logo"></div>
+				<nav class="header__links">
+					<ul class="header__links-list">
+						<li class="header__links-item">
+							<span class="header__links-icon header__links-icon--github"
+								><i class="fa-brands fa-github"></i
+							></span>
+							<a href="#" class="header__links-link">GitHub</a>
+						</li>
+						<li class="header__links-item">
+							<span class="header__links-icon header__links-icon--star"
+								><i class="fa-solid fa-star"></i
+							></span>
+							<span class="header__links-text">1</span>
+						</li>
+					</ul>
+				</nav>
+			</div>
+		</header>
+		<main class="main u-fluid-padding">
+			<hgroup class="main__heading">
+				<h1 class="main__title">Ingest<span class="u-special-char">ls</span></h1>
+				<h3 class="main__subtitle">Faça o digest do seu código-fonte otimizado para IA.</h3>
+			</hgroup>
+			<p class="main__description">
+				Transforme todo seu código-fonte de um diretório ou repositório do GitHub em formato de texto simples. O
+				Ingestls é ideal para estruturar seu projeto como insumo de contexto para LLMs.
+			</p>
+			<section id="input" class="main__section">
+				<form class="section__form" id="ingest-form">
+					<div class="section-form__column">
+						<input
+							type="text"
+							id="path"
+							name="path"
+							class="section-form__input-text"
+							placeholder="URL ou Diretório"
+						/>
+					</div>
+					<div class="section-form__grid">
+						<div class="section-form__select-wrapper">
+							<select id="pattern-type" name="pattern-type" class="section-form__select">
+								<option value="exclude" selected>Excluir</option>
+								<option value="include">Incluir</option>
+							</select>
+							<span class="section-form__select-icon">
+								<i class="fa-solid fa-caret-down"></i>
+							</span>
+						</div>
+						<input
+							type="text"
+							id="pattern"
+							name="pattern"
+							class="section-form__input-text"
+							placeholder="*.md, node_modules/, .env"
+						/>
+						<button type="submit" class="section-form__button">
+							<span class="section-form__button-icon-box">
+								<i class="fa-solid fa-file-code section-form__button-icon"></i>
+							</span>
+							Ingest
+						</button>
+					</div>
+				</form>
+			</section>
+			<section id="output" class="main__section">
+				<div class="output-wrapper">
+					<div class="section-output__column">
+						<div class="section-output__item section-output__item--summary">
+							<hgroup class="section-output__heading">
+								<h5 class="section-output__title">Resumo</h5>
+							</hgroup>
+							<div class="section-output__result section-output__result--summary">
+								<span class="section-output__copy-icon-box">
+									<i class="fa-solid fa-copy section-output__copy-icon"></i>
+								</span>
+								<div class="section-output__result-scroll">
+									<pre><code id="result-summary"></code></pre>
+								</div>
+							</div>
+							<div class="section-output__buttons">
+								<a href="javascript:void(0);" class="section-output__button">
+									<span class="section-output__button-icon-box"
+										><i class="fa-solid fa-copy section-output__button-icon"></i>
+									</span>
+									Copiar
+								</a>
+							</div>
+						</div>
+						<div class="section-output__item section-output__item--structure">
+							<hgroup class="section-output__heading">
+								<h5 class="section-output__title">Estrutura de Diretório</h5>
+							</hgroup>
+							<div class="section-output__result section-output__result--structure">
+								<span class="section-output__copy-icon-box">
+									<i class="fa-solid fa-copy section-output__copy-icon"></i>
+								</span>
+								<div class="section-output__result-scroll">
+									<pre><code id="result-structure"></code></pre>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="section-output__item">
+						<hgroup class="section-output__heading">
+							<h5 class="section-output__title">Conteúdo dos Arquivos</h5>
+						</hgroup>
+						<div class="section-output__result section-output__result--files-content">
+							<span class="section-output__copy-icon-box">
+								<i class="fa-solid fa-copy section-output__copy-icon"></i>
+							</span>
+							<div class="section-output__result-scroll">
+								<pre><code id="result-files-content"></code></pre>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+		</main>
+		<footer class="footer u-fluid-padding">
+			<div class="footer__inner">
+				<p class="footer__copy">
+					© 2026 <a href="#" class="footer__copy-link">Ingestls</a>. Todos os Direitos Reservados
+				</p>
+			</div>
+		</footer>
+	</body>
 </html>
