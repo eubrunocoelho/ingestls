@@ -3,6 +3,7 @@ import { getFormData } from './modules/form.js';
 import { getErrorMessages, ingest } from './modules/ingest.js';
 import { hideOutput, showOutput } from './modules/output.js';
 import { hideLoading, showLoading } from './modules/loading.js';
+import { showToast } from './modules/toast.js';
 
 const form = document.getElementById('ingest-form');
 
@@ -29,16 +30,19 @@ form.addEventListener('submit', async (event) => {
 
 		if (response.status !== 201) {
 			showAlerts(getErrorMessages(result));
+			showToast('Ocorreu um erro ao processar a requisição.', 'danger');
 
 			return;
 		}
 
 		showOutput(result);
+		showToast('Requisição processada com sucesso!', 'success');
 	} catch (error) {
 		console.error(error);
 
 		hideLoading();
 
 		showAlerts(['Não foi possível conectar ao servidor.']);
+		showToast('Não foi possível conectar ao servidor.', 'danger');
 	}
 });

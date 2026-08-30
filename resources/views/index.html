@@ -46,6 +46,11 @@
 				Ingestls é ideal para estruturar seu projeto como insumo de contexto para LLMs.
 			</p>
 			<section id="input" class="main__section">
+				<div class="notice notice--warning">
+					Antes de processar um repositório do GitHub, verifique a procedência do código. O Ingestls apenas
+					extrai e organiza o conteúdo dos arquivos — ele não analisa a segurança do repositório, então evite
+					usar fontes desconhecidas ou não confiáveis.
+				</div>
 				<form class="section__form" id="ingest-form">
 					<div class="section-form__column">
 						<input
@@ -143,10 +148,5 @@
 				</p>
 			</div>
 		</footer>
-		<div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true">
-			<div class="toast">
-				<p class="toast__message">Message</p>
-			</div>
-		</div>
 	</body>
 </html>
