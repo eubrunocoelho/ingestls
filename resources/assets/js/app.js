@@ -4,6 +4,7 @@ import { getErrorMessages, ingest } from './modules/ingest.js';
 import { hideOutput, showOutput } from './modules/output.js';
 import { hideLoading, showLoading } from './modules/loading.js';
 import { showToast } from './modules/toast.js';
+import { setupCopyButtons } from './modules/copy.js';
 
 const form = document.getElementById('ingest-form');
 
@@ -12,6 +13,8 @@ const delay = (ms) => {
 };
 
 const MIN_LOADING_TIME = 1000;
+
+setupCopyButtons();
 
 form.addEventListener('submit', async (event) => {
 	event.preventDefault();
