@@ -117,8 +117,8 @@ class GitHubIngestStrategy(IngestStrategy[tuple[GitHubURLDTO, Path]]):
             return None
 
         return (
-            f'<{url_dto.type.value}>'
-            f'`{url_dto.reference}`'
+            f'{url_dto.type.value} '
+            f'{url_dto.reference}'
         )
 
     def _cleanup(self, target: tuple[GitHubURLDTO, Path]) -> None:
