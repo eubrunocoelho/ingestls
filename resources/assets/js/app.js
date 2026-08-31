@@ -1,10 +1,13 @@
-import { clearAlerts, showAlert, showAlerts } from './modules/alert.js';
+import { clearAlerts, showAlerts } from './modules/alert.js';
 import { getFormData } from './modules/form.js';
 import { getErrorMessages, ingest } from './modules/ingest.js';
 import { hideOutput, showOutput } from './modules/output.js';
 import { hideLoading, showLoading } from './modules/loading.js';
 import { showToast } from './modules/toast.js';
 import { setupCopyButtons } from './modules/copy.js';
+import { getRepositoryStars, showRepositoryStars } from './modules/github.js';
+
+getRepositoryStars('eubrunocoelho', 'ingestls').then(showRepositoryStars).catch(console.error);
 
 const form = document.getElementById('ingest-form');
 

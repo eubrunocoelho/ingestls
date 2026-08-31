@@ -184,6 +184,21 @@ body {
   width: 100%;
 }
 
+.header__logo {
+  align-items: center;
+  display: flex;
+  height: 62px;
+  width: max-content;
+}
+
+.header__logo h1 a {
+  color: var(--primary-color);
+  font-family: var(--font-open-sans);
+  font-size: 25px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
 .header__links {
   height: 100%;
   width: max-content;
