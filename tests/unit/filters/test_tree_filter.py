@@ -428,3 +428,127 @@ def test_include_does_not_mutate_the_original_pattern_list_or_tree_structure(tre
 
     assert result is tree
     assert patterns == patterns_snapshot
+
+
+def test_exclude_with_duplicate_extension_pattern_behaves_like_a_single_one(tree_filter):
+    # Cenário 1: o mesmo padrão '*.php' duas vezes na lista não deve mudar
+    # o resultado em nada -- a checagem em `_matches_any` é um `any(...)`
+    # (OR de booleanos), então um item repetido é redundante, não comulativo.
+    # O resultado com a lista duplicada precisa ser IDÊNTICO ao resultado
+    # com a lista contendo o padrão uma única vez.
+    duplicated_patterns = [
+        PatternDTO(
+            pattern='*.php',
+            value='.php',
+            kind=PatternKindEnum.EXTENSION,
+            scope=PatternScopeEnum.GLOBAL,
+        ),
+        PatternDTO(
+            pattern='*.php',
+            value='.php',
+            kind=PatternKindEnum.EXTENSION,
+            scope=PatternScopeEnum.GLOBAL,
+        ),
+    ]
+    single_pattern = duplicated_patterns[:1]
+
+    tree_with_duplicate = _build_sample_project_tree()
+    tree_with_single = _build_sample_project_tree()
+
+    result_duplicate = tree_filter.exclude(root=tree_with_duplicate, patterns=duplicated_patterns)
+    result_single = tree_filter.exclude(root=tree_with_single, patterns=single_pattern)
+
+    assert _flatten(result_duplicate) == _flatten(result_single)
+
+
+def test_exclude_with_duplicate_directory_pattern_removes_subtree_once_not_twice(tree_filter):
+    # Cenário 2: `vendor/` duplicado na lista de padrões. Confirma que ambas
+    # as subárvores `vendor` (raiz e `app/vendor`) somem exatamente como
+    # aconteceria com um único `vendor/` -- não há conceito de "remover de novo"
+    # algo que já foi removido, então a duplicata é inofensiva.
+    duplicated_patterns = [
+        PatternDTO(
+            pattern='vendor/',
+            value='vendor',
+            kind=PatternKindEnum.DIRECTORY,
+            scope=PatternScopeEnum.GLOBAL,
+        ),
+        PatternDTO(
+            pattern='vendor/',
+            value='vendor',
+            kind=PatternKindEnum.DIRECTORY,
+            scope=PatternScopeEnum.GLOBAL,
+        ),
+    ]
+
+    tree = _build_sample_project_tree()
+
+    result = tree_filter.exclude(root=tree, patterns=duplicated_patterns)
+
+    root_names = [child.name for child in result.children]
+    app_node = next(child for child in result.children if child.name == 'app')
+    app_names = [child.name for child in app_node.children]
+
+    assert 'vendor' not in root_names
+    assert 'vendor' not in app_names
+
+
+def test_exclude_combines_multiple_distinct_file_patterns_of_the_same_kind(tree_filter):
+    # Cenário 3: dois padrões `FILE` distintos (`info.php` e `index.php`), não
+    # duplicados entre si, mas do mesmo `kind`. Confirma que a filtragem
+    # combina os dois como OR independente -- cada arquivo listado é removido,
+    # e um arquivo  que não bate em NENHUM dos dois permanece.
+    tree = _dir('root', [
+        _file('info.php'),
+        _file('index.php'),
+        _file('readme.md'),
+    ])
+    patterns = [
+        PatternDTO(
+            pattern='info.php',
+            value='info.php',
+            kind=PatternKindEnum.FILE,
+            scope=PatternScopeEnum.GLOBAL,
+        ),
+        PatternDTO(
+            pattern='index.php',
+            value='index.php',
+            kind=PatternKindEnum.FILE,
+            scope=PatternScopeEnum.GLOBAL,
+        ),
+    ]
+
+    result = tree_filter.exclude(root=tree, patterns=patterns)
+
+    names = [child.name for child in result.children]
+    assert names == ['readme.md']
+
+
+def test_include_combines_multiple_distinct_file_patterns_of_the_same_kind(tree_filter):
+    # Mesmo cenário 3, mas pelo lado do `include`: só `info.php` e `index.php`
+    # devem sobreviver, `readme.md` deve ser podado.
+    tree = _dir('root', [
+        _file('info.php'),
+        _file('index.php'),
+        _file('readme.md'),
+    ])
+
+    patterns = [
+        PatternDTO(
+            pattern='info.php',
+            value='info.php',
+            kind=PatternKindEnum.FILE,
+            scope=PatternScopeEnum.GLOBAL,
+        ),
+        PatternDTO(
+            pattern='index.php',
+            value='index.php',
+            kind=PatternKindEnum.FILE,
+            scope=PatternScopeEnum.GLOBAL,
+        ),
+    ]
+
+    result = tree_filter.include(root=tree, patterns=patterns)
+
+    names = [child.name for child in result.children]
+    assert sorted(names) == ['index.php', 'info.php']

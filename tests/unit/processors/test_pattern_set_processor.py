@@ -123,3 +123,49 @@ def test_single_pattern_without_commas(processor):
         kind=PatternKindEnum.EXTENSION,
         scope=PatternScopeEnum.GLOBAL,
     )
+
+
+def test_does_not_deduplicate_identical_extension_patterns(processor):
+    # Cenário 1: a MESMA string de padrão repetida duas vezes (`*.php,*.php`).
+    # O `PatternSetProcessor` não tem lógica de duplicação -- cada item da string
+    # vira um `PatternDTO` independente, mesmo que idêntico ao anterior.
+    # Quem decide se isso importa (ou não) é a camada de filtragem (`TreeFilter`),
+    # não o processor.
+    raw = '*.php,*.php'
+
+    result = processor.process(raw)
+
+    assert len(result) == 2
+    assert result[0] == result[1]
+    assert result[0] == PatternDTO(
+        pattern='*.php',
+        value='.php',
+        kind=PatternKindEnum.EXTENSION,
+        scope=PatternScopeEnum.GLOBAL,
+    )
+
+
+def test_does_not_deduplicate_identical_directory_patterns(processor):
+    # Cenário 2: mesma ideia, mas para um padrão `DIRECTORY` (`vendor/,vendor/`).
+    raw = 'vendor/,vendor/'
+
+    result = processor.process(raw)
+
+    assert len(result) == 2
+    assert result[0] == result[1]
+    assert result[0].kind == PatternKindEnum.DIRECTORY
+    assert result[0].value == 'vendor'
+
+
+def test_preserves_multiple_distinct_patterns_of_the_same_kind_in_order(processor):
+    # Cenário 3: não é uma duplicata literal, mas um caso comum na prática
+    # -- o usuário lista vários nomes de arquivo diferentes, todos do mesmo
+    # `kind=FILE` (`info.php,index.php`). O processor deve preservar os DOIS,
+    # na ordem em que aparecem, sem um "sobrescrever" o outro.
+    raw = 'info.php,index.php'
+
+    result = processor.process(raw)
+
+    assert len(result) == 2
+    assert [item.value for item in result] == ['info.php', 'index.php']
+    assert all(item.kind == PatternKindEnum.FILE for item in result)
