@@ -1,0 +1,29 @@
+{
+  "name": "Ingestls",
+  "version": "1.0.0",
+  "description": "Transforme código-fonte em texto otimizado para LLMs",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "build": "webpack",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eubrunocoelho/ingestls.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/eubrunocoelho/ingestls/issues"
+  },
+  "homepage": "https://github.com/eubrunocoelho/ingestls#readme",
+  "devDependencies": {
+    "webpack": "^5.110.2",
+    "webpack-cli": "^7.2.3"
+  }
+}

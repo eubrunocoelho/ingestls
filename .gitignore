@@ -19,17 +19,17 @@ __pycache__/
 # Logs
 *.log
 
-# Sistema Operacional
+# Sistema operacional
 .DS_Store
 Thumbs.db
 
 # Distruição / build
 build/
-dist/
 *.egg-info/
 
 # Diretório temporário
 tmp/*
 
 # Outros
+node_modules/
 .prettierrc
