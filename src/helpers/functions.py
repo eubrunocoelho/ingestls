@@ -1,8 +1,9 @@
 import builtins
 
 from flask import current_app
-from src.exceptions.dump.debug_exception import DumpException
+
 from src.container.di_container import DIContainer
+from src.exceptions.dump.debug_exception import DumpException
 
 
 def debug(value):

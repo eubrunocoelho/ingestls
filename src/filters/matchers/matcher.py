@@ -9,6 +9,6 @@ class Matcher(ABC):
     def matches(
             self,
             node: DirectoryNode,
-            pattern: PatternDTO
+            pattern: PatternDTO,
     ) -> bool:
         pass

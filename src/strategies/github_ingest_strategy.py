@@ -1,8 +1,7 @@
-from pathlib import Path
 import logging
+from pathlib import Path
 
 from src.dtos.file_read_result_dto import FileReadResultDTO
-from src.providers.ingest_summary_provider import IngestSummaryProvider
 from src.dtos.github_url_dto import GitHubURLDTO
 from src.dtos.ingest_request_dto import IngestRequestDTO
 from src.filesystem.directory_node import DirectoryNode
@@ -14,6 +13,7 @@ from src.integrations.github_repository_cloner import GitHubRepositoryCloner
 from src.integrations.github_url import GITHUB_URL_PREFIX
 from src.processors.github_url_processor import GitHubURLProcessor
 from src.processors.pattern_set_processor import PatternSetProcessor
+from src.providers.ingest_summary_provider import IngestSummaryProvider
 from src.strategies.ingest_strategy import IngestStrategy
 
 logger = logging.getLogger(__name__)
@@ -38,7 +38,7 @@ class GitHubIngestStrategy(IngestStrategy[tuple[GitHubURLDTO, Path]]):
             pattern_set_processor,
             tree_filter,
             directory_tree_renderer,
-            ingest_summary_provider
+            ingest_summary_provider,
         )
 
         self.url_processor = url_processor
@@ -68,12 +68,12 @@ class GitHubIngestStrategy(IngestStrategy[tuple[GitHubURLDTO, Path]]):
 
     def _scan(
             self,
-            target: tuple[GitHubURLDTO, Path]
+            target: tuple[GitHubURLDTO, Path],
     ) -> DirectoryNode:
         url_dto, local_path = target
 
         directory_tree = self.directory_scanner.read(
-            local_path
+            local_path,
         )
 
         directory_tree.name = url_dto.repository
@@ -87,7 +87,7 @@ class GitHubIngestStrategy(IngestStrategy[tuple[GitHubURLDTO, Path]]):
         if url_dto.path:
             directory_tree = self._narrow_to_path(
                 directory_tree,
-                url_dto.path
+                url_dto.path,
             )
 
         return directory_tree
@@ -95,7 +95,7 @@ class GitHubIngestStrategy(IngestStrategy[tuple[GitHubURLDTO, Path]]):
     def _read_files(
             self,
             target: tuple[GitHubURLDTO, Path],
-            directory_tree: DirectoryNode
+            directory_tree: DirectoryNode,
     ) -> FileReadResultDTO:
         return self.file_reader.read(directory_tree)
 
@@ -126,20 +126,20 @@ class GitHubIngestStrategy(IngestStrategy[tuple[GitHubURLDTO, Path]]):
 
         try:
             self.repository_cloner.cleanup(
-                local_path
+                local_path,
             )
 
         except Exception:
             logger.warning(
                 'Falha ao limpar diretório temporário %s (será removido depois).',
                 local_path,
-                exc_info=True
+                exc_info=True,
             )
 
     @staticmethod
     def _narrow_to_path(
             root: DirectoryNode,
-            path: str
+            path: str,
     ) -> DirectoryNode:
         node = root
 
@@ -149,12 +149,12 @@ class GitHubIngestStrategy(IngestStrategy[tuple[GitHubURLDTO, Path]]):
                     child for child in node.children
                     if child.name == segment
                 ),
-                None
+                None,
             )
 
             if match is None or not match.is_directory:
                 raise ValueError(
-                    f'Caminho não encontrado no repositório: {path}'
+                    f'Caminho não encontrado no repositório: {path}',
                 )
 
             node = match

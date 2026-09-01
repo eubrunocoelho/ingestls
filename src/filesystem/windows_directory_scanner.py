@@ -30,7 +30,7 @@ class WindowsDirectoryScanner:
             key=lambda p: (
                 p.is_file(),
                 p.name.lower(),
-            )
+            ),
         )
 
         for child in children:

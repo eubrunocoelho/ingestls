@@ -1,7 +1,7 @@
+from src.enums.pattern_kind_enum import PatternKindEnum
 from src.filters.matchers.directory_matcher import DirectoryMatcher
 from src.filters.matchers.extension_matcher import ExtensionMatcher
 from src.filters.matchers.file_matcher import FileMatcher
-from src.enums.pattern_kind_enum import PatternKindEnum
 from src.filters.matchers.matcher import Matcher
 
 
@@ -18,7 +18,7 @@ class MatcherFactory:
 
         if matcher is None:
             raise ValueError(
-                f'Matcher não encontrado para \'{kind.value}\'.'
+                f'Matcher não encontrado para \'{kind.value}\'.',
             )
 
         return matcher

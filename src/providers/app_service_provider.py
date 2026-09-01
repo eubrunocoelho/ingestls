@@ -1,6 +1,4 @@
-from src.providers.ingest_summary_provider import IngestSummaryProvider
-from src.providers.token_estimator import TokenEstimator
-from src.config.paths import VIEWS_PATH, TMP_DIR
+from src.config.paths import TMP_DIR, VIEWS_PATH
 from src.container.di_container import DIContainer
 from src.controllers.ingest_controller import IngestController
 from src.controllers.web_controller import WebController
@@ -13,12 +11,14 @@ from src.filesystem.windows_file_reader import WindowsFileReader
 from src.filters.factories.locator_factory import LocatorFactory
 from src.filters.factories.matcher_factory import MatcherFactory
 from src.filters.tree_filter import TreeFilter
-from src.integrations.github_url_parser import GitHubURLParser
 from src.integrations.github_ref_resolver import GitHubRefResolver
 from src.integrations.github_repository_cloner import GitHubRepositoryCloner
+from src.integrations.github_url_parser import GitHubURLParser
 from src.processors.github_url_processor import GitHubURLProcessor
 from src.processors.pattern_set_processor import PatternSetProcessor
+from src.providers.ingest_summary_provider import IngestSummaryProvider
 from src.providers.jinja_view_provider import JinjaViewProvider
+from src.providers.token_estimator import TokenEstimator
 from src.services.ingest_service import IngestService
 from src.strategies.github_ingest_strategy import GitHubIngestStrategy
 from src.strategies.windows_ingest_strategy import WindowsIngestStrategy
@@ -48,15 +48,15 @@ class AppServiceProvider:
         container.singleton(
             JinjaViewProvider,
             lambda: JinjaViewProvider(
-                views_path=VIEWS_PATH
-            )
+                views_path=VIEWS_PATH,
+            ),
         )
 
         container.singleton(
             WebController,
             lambda: WebController(
                 container.resolve(JinjaViewProvider),
-            )
+            ),
         )
 
     @staticmethod
@@ -69,15 +69,15 @@ class AppServiceProvider:
         container.singleton(
             FileInspector,
             lambda: FileInspector(
-                container.resolve(ContentInspector)
-            )
+                container.resolve(ContentInspector),
+            ),
         )
 
         container.singleton(
             WindowsFileReader,
             lambda: WindowsFileReader(
                 container.resolve(FileInspector),
-            )
+            ),
         )
 
         container.singleton(
@@ -87,19 +87,19 @@ class AppServiceProvider:
 
         container.singleton(
             DirectoryTreeRenderer,
-            lambda: DirectoryTreeRenderer()
+            lambda: DirectoryTreeRenderer(),
         )
 
     @staticmethod
     def _register_filters(container: DIContainer) -> None:
         container.singleton(
             LocatorFactory,
-            lambda: LocatorFactory()
+            lambda: LocatorFactory(),
         )
 
         container.singleton(
             MatcherFactory,
-            lambda: MatcherFactory()
+            lambda: MatcherFactory(),
         )
 
         container.singleton(
@@ -107,14 +107,14 @@ class AppServiceProvider:
             lambda: TreeFilter(
                 container.resolve(LocatorFactory),
                 container.resolve(MatcherFactory),
-            )
+            ),
         )
 
     @staticmethod
     def _register_github(container: DIContainer) -> None:
         container.singleton(
             GitHubURLParser,
-            lambda: GitHubURLParser()
+            lambda: GitHubURLParser(),
         )
 
         container.singleton(
@@ -126,29 +126,29 @@ class AppServiceProvider:
             GitHubURLProcessor,
             lambda: GitHubURLProcessor(
                 container.resolve(GitHubURLParser),
-                container.resolve(GitHubRefResolver)
-            )
+                container.resolve(GitHubRefResolver),
+            ),
         )
 
         container.singleton(
             GitHubRepositoryCloner,
             lambda: GitHubRepositoryCloner(
-                TMP_DIR
-            )
+                TMP_DIR,
+            ),
         )
 
     @staticmethod
     def _register_summary(container: DIContainer) -> None:
         container.singleton(
             TokenEstimator,
-            lambda: TokenEstimator()
+            lambda: TokenEstimator(),
         )
 
         container.singleton(
             IngestSummaryProvider,
             lambda: IngestSummaryProvider(
-                container.resolve(TokenEstimator)
-            )
+                container.resolve(TokenEstimator),
+            ),
         )
 
     @staticmethod
@@ -162,14 +162,14 @@ class AppServiceProvider:
                 PathFilenamePatternRule(),
                 RecursiveDirectoryPatternRule(),
                 RecursiveFilenamePatternRule(),
-            )
+            ),
         )
 
         container.singleton(
             PatternSetProcessor,
             lambda: PatternSetProcessor(
-                container.resolve(IngestPatternValidator)
-            )
+                container.resolve(IngestPatternValidator),
+            ),
         )
 
         container.singleton(
@@ -180,8 +180,8 @@ class AppServiceProvider:
                 container.resolve(WindowsDirectoryScanner),
                 container.resolve(DirectoryTreeRenderer),
                 container.resolve(WindowsFileReader),
-                container.resolve(IngestSummaryProvider)
-            )
+                container.resolve(IngestSummaryProvider),
+            ),
         )
 
         container.singleton(
@@ -194,8 +194,8 @@ class AppServiceProvider:
                 container.resolve(WindowsDirectoryScanner),
                 container.resolve(DirectoryTreeRenderer),
                 container.resolve(WindowsFileReader),
-                container.resolve(IngestSummaryProvider)
-            )
+                container.resolve(IngestSummaryProvider),
+            ),
         )
 
         container.singleton(
@@ -203,7 +203,7 @@ class AppServiceProvider:
             lambda: IngestDispatcher(
                 container.resolve(WindowsIngestStrategy),
                 container.resolve(GitHubIngestStrategy),
-            )
+            ),
         )
 
         container.singleton(
@@ -211,7 +211,7 @@ class AppServiceProvider:
             lambda: IngestDirectoryValidator(
                 DirectoryExistsRule(),
                 GitHubURLFormatRule(),
-            )
+            ),
         )
 
         container.singleton(
@@ -219,12 +219,12 @@ class AppServiceProvider:
             lambda: IngestService(
                 container.resolve(IngestDirectoryValidator),
                 container.resolve(IngestDispatcher),
-            )
+            ),
         )
 
         container.singleton(
             IngestController,
             lambda: IngestController(
-                container.resolve(IngestService)
-            )
+                container.resolve(IngestService),
+            ),
         )

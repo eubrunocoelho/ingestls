@@ -34,19 +34,19 @@ class IngestSummaryProvider:
         )
 
         lines.append(
-            f'Arquivos Analisados: {stats.file_count}'
+            f'Arquivos Analisados: {stats.file_count}',
         )
 
         lines.append(
             f'Linhas de Código: '
-            f'{self._format_thousands(code_line_count)}'
+            f'{self._format_thousands(code_line_count)}',
         )
 
         lines.append('')
 
         lines.append(
             f'Estimativa de Tokens: '
-            f'{self.token_estimator.format(token_count)}'
+            f'{self.token_estimator.format(token_count)}',
         )
 
         return '\n'.join(lines)

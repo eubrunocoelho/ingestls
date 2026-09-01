@@ -15,7 +15,7 @@ class RecursiveFilenamePatternRule(PatternRule):
                 pattern=pattern,
                 value=pattern[2:],
                 kind=PatternKindEnum.FILE,
-                scope=PatternScopeEnum.RECURSIVE
+                scope=PatternScopeEnum.RECURSIVE,
             )
 
         return None

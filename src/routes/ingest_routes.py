@@ -1,7 +1,7 @@
 from flask import Blueprint, Response
 
-from src.helpers.functions import get_container
 from src.controllers.ingest_controller import IngestController
+from src.helpers.functions import get_container
 
 ingest_bp = Blueprint('ingest_routes', __name__)
 

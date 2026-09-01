@@ -1,6 +1,6 @@
 from src.dispatchers.ingest_dispatcher import IngestDispatcher
-from src.dtos.ingest_response_dto import IngestResponseDTO
 from src.dtos.ingest_request_dto import IngestRequestDTO
+from src.dtos.ingest_response_dto import IngestResponseDTO
 from src.validators.ingest_directory_validator import IngestDirectoryValidator
 
 

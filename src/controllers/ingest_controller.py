@@ -1,12 +1,12 @@
 from http import HTTPStatus
 
-from flask import request, Response
+from flask import Response, request
 
 from src.dtos.ingest_request_dto import IngestRequestDTO
+from src.responses.response_factory import ResponseFactory
+from src.services.ingest_service import IngestService
 from src.validators.ingest_request_validator import IngestRequestValidator
 from src.validators.request_validator import RequestValidator
-from src.services.ingest_service import IngestService
-from src.responses.response_factory import ResponseFactory
 
 
 class IngestController:

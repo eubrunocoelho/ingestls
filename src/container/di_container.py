@@ -1,4 +1,4 @@
-from typing import Callable, Any
+from typing import Any, Callable
 
 from src.container.binding import Binding
 from src.container.lifetime import Lifetime
@@ -25,7 +25,7 @@ class DIContainer:
 
         if binding is None:
             raise RuntimeError(
-                f'Abstração não vinculada para {abstract.__name__}'
+                f'Abstração não vinculada para {abstract.__name__}',
             )
 
         if (

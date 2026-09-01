@@ -31,7 +31,7 @@ class GitHubRepositoryCloner:
             tempfile.mkdtemp(
                 prefix='ingestls-',
                 dir=self.base_dir,
-            )
+            ),
         )
 
         repo: Repo | None = None
@@ -40,7 +40,7 @@ class GitHubRepositoryCloner:
         try:
             clone_kwargs = {
                 'source': url,
-                'target': str(target)
+                'target': str(target),
             }
 
             if ref and ref_type in {
@@ -54,7 +54,7 @@ class GitHubRepositoryCloner:
             if ref and ref_type == GitHubURLTypeEnum.COMMIT:
                 if repo is None:
                     raise RuntimeError(
-                        'O repositório não foi inicializado.'
+                        'O repositório não foi inicializado.',
                     )
 
                 porcelain.checkout(
@@ -68,7 +68,7 @@ class GitHubRepositoryCloner:
 
         except Exception as error:
             raise GitHubAPIException(
-                f'Falha ao clonar {url}: {error}'
+                f'Falha ao clonar {url}: {error}',
             ) from error
 
         finally:
@@ -109,7 +109,7 @@ class GitHubRepositoryCloner:
     def _force_remove_readonly(func, path, _exc) -> None:
         os.chmod(
             path,
-            stat.S_IWRITE
+            stat.S_IWRITE,
         )
 
         func(path)

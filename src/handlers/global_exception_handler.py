@@ -54,7 +54,7 @@ class GlobalExceptionHandler:
                 type(e),
                 e,
                 e.__traceback__,
-            )
+            ),
         )
 
     @staticmethod
@@ -82,7 +82,7 @@ class GlobalExceptionHandler:
                 ),
                 'stacktrace': GlobalExceptionHandler._get_stacktrace(e),
             },
-            HTTPStatus(e.status_code)
+            HTTPStatus(e.status_code),
         )
 
     @staticmethod
@@ -99,7 +99,7 @@ class GlobalExceptionHandler:
                 ),
                 'stacktrace': GlobalExceptionHandler._get_stacktrace(e),
             },
-            HTTPStatus(e.status_code)
+            HTTPStatus(e.status_code),
         )
 
     @staticmethod
@@ -113,7 +113,7 @@ class GlobalExceptionHandler:
                 'message': 'Ocorreu um erro inesperado.',
                 'stacktrace': GlobalExceptionHandler._get_stacktrace(e),
             },
-            HTTPStatus.INTERNAL_SERVER_ERROR
+            HTTPStatus.INTERNAL_SERVER_ERROR,
         )
 
     @staticmethod

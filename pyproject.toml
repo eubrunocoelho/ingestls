@@ -1,3 +1,22 @@
 [tool.pytest.ini_options]
 pythonpath = ["."]
 testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py314"
+
+[tool.ruff.lint]
+select = [
+    "E", # pycodestyle / PEP 8
+    "W", # pycodestyle warnings
+    "F", # Pyflakes
+    "I", # isort / imports
+    "COM812", # trailing commas
+]
+
+[tool.ruff.format]
+quote-style = "single"
+indent-style = "space"
+line-ending = "lf"
+skip-magic-trailing-comma = false

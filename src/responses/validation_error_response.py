@@ -35,7 +35,7 @@ class ValidationErrorResponse:
                         error['msg'],
                     ),
                     'type': error['type'],
-                }
+                },
             )
 
         return cls(errors=errors)

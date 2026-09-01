@@ -1,6 +1,6 @@
-from src.integrations.github_url import GITHUB_URL_PATTERN, GITHUB_URL_PREFIX
 from src.dtos.ingest_request_dto import IngestRequestDTO
 from src.exceptions.github.invalid_github_url_exception import InvalidGitHubURLException
+from src.integrations.github_url import GITHUB_URL_PATTERN, GITHUB_URL_PREFIX
 from src.validators.directory_rules.ingest_rule import IngestRule
 
 

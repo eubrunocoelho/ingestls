@@ -1,14 +1,14 @@
 from abc import ABC, abstractmethod
-from typing import TypeVar, Generic
+from typing import Generic, TypeVar
 
 from src.dtos.file_read_result_dto import FileReadResultDTO
-from src.providers.ingest_summary_provider import IngestSummaryProvider
-from src.dtos.ingest_response_dto import IngestResponseDTO
 from src.dtos.ingest_request_dto import IngestRequestDTO
+from src.dtos.ingest_response_dto import IngestResponseDTO
 from src.filesystem.directory_node import DirectoryNode
 from src.filesystem.directory_tree_renderer import DirectoryTreeRenderer
 from src.filters.tree_filter import TreeFilter
 from src.processors.pattern_set_processor import PatternSetProcessor
+from src.providers.ingest_summary_provider import IngestSummaryProvider
 from src.strategies.pattern_type_dispatch import STRATEGY_METHOD_BY_PATTERN_TYPE
 
 TTarget = TypeVar('TTarget')
@@ -33,10 +33,10 @@ class IngestStrategy(ABC, Generic[TTarget]):
 
     def ingest(
             self,
-            dto: IngestRequestDTO
+            dto: IngestRequestDTO,
     ) -> IngestResponseDTO:
         pattern = self.pattern_set_processor.process(
-            dto.pattern
+            dto.pattern,
         )
 
         target = self._resolve_target(dto)
@@ -46,22 +46,22 @@ class IngestStrategy(ABC, Generic[TTarget]):
 
             method_name = STRATEGY_METHOD_BY_PATTERN_TYPE.get(
                 dto.pattern_type,
-                'exclude'
+                'exclude',
             )
 
             method = getattr(
                 self.tree_filter,
-                method_name
+                method_name,
             )
 
             directory_tree = method(
                 root=directory_tree,
-                patterns=pattern
+                patterns=pattern,
             )
 
             directory_structure = (
                 self.directory_tree_renderer.render_tree(
-                    directory_tree
+                    directory_tree,
                 )
             )
 

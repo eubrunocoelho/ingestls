@@ -1,21 +1,21 @@
 from src.dtos.github_url_dto import GitHubURLDTO
 from src.enums.github_url_type_enum import GitHubURLTypeEnum
-from src.integrations.github_url_parser import GitHubURLParser
 from src.integrations.github_ref_resolver import GitHubRefResolver
+from src.integrations.github_url_parser import GitHubURLParser
 
 
 class GitHubURLProcessor:
     def __init__(
             self,
             parser: GitHubURLParser,
-            ref_resolver: GitHubRefResolver
+            ref_resolver: GitHubRefResolver,
     ):
         self.parser = parser
         self.ref_resolver = ref_resolver
 
     def process(
             self,
-            url: str
+            url: str,
     ) -> GitHubURLDTO:
         parts = self.parser.parse(url)
 

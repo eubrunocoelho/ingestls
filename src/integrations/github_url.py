@@ -7,5 +7,5 @@ GITHUB_URL_PATTERN = re.compile(
     r'[\w.-]+/'  # owner
     r'[\w.-]+'  # repo
     r'(?:/tree/.+)?'  # opcional: /tree/<referencia>[/<path>...]
-    r'/?$'
+    r'/?$',
 )

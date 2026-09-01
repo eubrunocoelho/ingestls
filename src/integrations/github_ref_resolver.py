@@ -14,15 +14,15 @@ class GitHubRefResolver:
             self,
             owner: str,
             repository: str,
-            segments: tuple[str, ...]
+            segments: tuple[str, ...],
     ) -> tuple[
         GitHubURLTypeEnum,
         str,
-        str | None
+        str | None,
     ]:
         if not segments:
             raise GitHubAPIException(
-                'Nenhuma referência informada.'
+                'Nenhuma referência informada.',
             )
 
         # Commit SHA
@@ -45,17 +45,17 @@ class GitHubRefResolver:
         except Exception as error:
             raise GitHubAPIException(
                 f'Falha ao listar referências de '
-                f'{owner}/{repository}: {error}'
+                f'{owner}/{repository}: {error}',
             ) from error
 
         branches = self._ref_names(
             refs,
-            b'refs/heads/'
+            b'refs/heads/',
         )
 
         tags = self._ref_names(
             refs,
-            b'refs/tags/'
+            b'refs/tags/',
         )
 
         # Tenta encontrar a maior referência possível.
@@ -76,11 +76,11 @@ class GitHubRefResolver:
                 len(segments), 0, -1,
         ):
             candidate = '/'.join(
-                segments[:index]
+                segments[:index],
             )
 
             path = self._make_path(
-                segments[index:]
+                segments[index:],
             )
 
             if candidate in branches:
@@ -100,17 +100,17 @@ class GitHubRefResolver:
         raise GitHubAPIException(
             f'Referência não encontrada em '
             f'{owner}/{repository}: '
-            f'{" / ".join(segments)}'
+            f'{" / ".join(segments)}',
         )
 
     @staticmethod
     def _ref_names(
             refs: dict,
-            prefix: bytes
+            prefix: bytes,
     ) -> set[str]:
         return {
             name.decode().removeprefix(
-                prefix.decode()
+                prefix.decode(),
             )
             for name in refs
             if name.startswith(prefix)
@@ -118,7 +118,7 @@ class GitHubRefResolver:
 
     @staticmethod
     def _make_path(
-            segments: tuple[str, ...]
+            segments: tuple[str, ...],
     ) -> str | None:
         if not segments:
             return None

@@ -1,5 +1,5 @@
-from src.dtos.ingest_response_dto import IngestResponseDTO
 from src.dtos.ingest_request_dto import IngestRequestDTO
+from src.dtos.ingest_response_dto import IngestResponseDTO
 from src.strategies.ingest_strategy import IngestStrategy
 
 

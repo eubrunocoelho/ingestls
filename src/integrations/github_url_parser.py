@@ -11,12 +11,12 @@ class GitHubURLParser:
 
         if parsed.scheme != 'https':
             raise InvalidGitHubURLException(
-                'A URL do GitHub deve utilizar HTTPS.'
+                'A URL do GitHub deve utilizar HTTPS.',
             )
 
         if parsed.netloc.lower() != 'github.com':
             raise InvalidGitHubURLException(
-                'A URL deve pertencer ao domínio github.com.'
+                'A URL deve pertencer ao domínio github.com.',
             )
 
         segments = tuple(
@@ -27,7 +27,7 @@ class GitHubURLParser:
 
         if len(segments) < 2:
             raise InvalidGitHubURLException(
-                'A URL deve possuir owner e repository.'
+                'A URL deve possuir owner e repository.',
             )
 
         owner = segments[0]
@@ -38,7 +38,7 @@ class GitHubURLParser:
 
         if not owner or not repository:
             raise InvalidGitHubURLException(
-                'Owner e repository são obrigatórios.'
+                'Owner e repository são obrigatórios.',
             )
 
         # https://github.com/owner/repository
@@ -53,17 +53,17 @@ class GitHubURLParser:
         # Tudo depois de `/tree/` será resolvido pelo `GitHubRefResolver`
         if segments[2] != 'tree':
             raise InvalidGitHubURLException(
-                'A URL do GitHub deve utilizar /tree/.'
+                'A URL do GitHub deve utilizar /tree/.',
             )
 
         if len(segments) < 4:
             raise InvalidGitHubURLException(
-                'A URL /tree/ deve possuir uma referência.'
+                'A URL /tree/ deve possuir uma referência.',
             )
 
         return GitHubURLPartsDTO(
             url=url,
             owner=owner,
             repository=repository,
-            segments=segments[3:]
+            segments=segments[3:],
         )

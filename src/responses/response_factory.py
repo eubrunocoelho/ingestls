@@ -2,7 +2,7 @@ from dataclasses import asdict, is_dataclass
 from http import HTTPStatus
 from typing import Any
 
-from flask import jsonify, Response
+from flask import Response, jsonify
 
 
 class ResponseFactory:

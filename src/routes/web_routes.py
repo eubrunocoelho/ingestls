@@ -3,8 +3,8 @@ from typing import Any
 from flask import Blueprint, send_from_directory
 
 from src.config.paths import ASSETS_PATH
-from src.helpers.functions import get_container
 from src.controllers.web_controller import WebController
+from src.helpers.functions import get_container
 
 web_bp = Blueprint('web_routes', __name__)
 

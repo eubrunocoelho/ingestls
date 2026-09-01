@@ -15,7 +15,7 @@ class PathFilenamePatternRule(PatternRule):
                 pattern=pattern,
                 value=pattern,
                 kind=PatternKindEnum.FILE,
-                scope=PatternScopeEnum.PATH
+                scope=PatternScopeEnum.PATH,
             )
 
         return None

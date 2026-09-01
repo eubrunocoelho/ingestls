@@ -31,7 +31,7 @@ class DirectoryTreeRenderer:
             suffix = '/' if child.is_directory else ''
 
             lines.append(
-                f'{prefix}{connector}{child.name}{suffix}'
+                f'{prefix}{connector}{child.name}{suffix}',
             )
 
             if child.is_directory:

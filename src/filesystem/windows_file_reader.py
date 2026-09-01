@@ -3,7 +3,7 @@ from pathlib import Path
 from src.dtos.file_read_result_dto import FileReadResultDTO
 from src.filesystem.directory_node import DirectoryNode
 from src.filesystem.file_inspector import FileInspector
-from src.filesystem.file_output_format import EMPTY_FILE_FLAG, BINARY_FILE_FLAG, FILE_START, FILE_END
+from src.filesystem.file_output_format import BINARY_FILE_FLAG, EMPTY_FILE_FLAG, FILE_END, FILE_START
 
 
 class WindowsFileReader:
@@ -20,7 +20,7 @@ class WindowsFileReader:
 
         return FileReadResultDTO(
             content='\n'.join(contents),
-            code_line_count=sum(line_counts)
+            code_line_count=sum(line_counts),
         )
 
     def _collect(
@@ -28,7 +28,7 @@ class WindowsFileReader:
             node: DirectoryNode,
             root_path: Path,
             contents: list[str],
-            line_counts: list[int]
+            line_counts: list[int],
     ) -> None:
         for child in node.children:
             if child.is_directory:
@@ -41,7 +41,7 @@ class WindowsFileReader:
             contents.append(
                 FILE_START.format(
                     path=relative_path.as_posix(),
-                )
+                ),
             )
 
             file_content = self._get_file_content(file_path)
