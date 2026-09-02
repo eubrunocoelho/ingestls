@@ -4,6 +4,14 @@
 
 A ideia central: em vez de você (ou uma IA) precisar abrir arquivo por arquivo para entender um projeto, o `Ingestls` entrega tudo em um único bloco de texto, já filtrado, formatado e com um resumo estatístico no topo.
 
+---
+
+![Screenshot](./.github/assets/img/screenshot.png)
+
+---
+
+![Screenshot with output](./.github/assets/img/screenshot-with-output.png)
+
 ## Exemplo de resposta
 
 ```
@@ -113,6 +121,9 @@ O _trade-off_ aceito: clonar um repositório (ainda que raso) é mais pesado em 
 ### Instalação
 
 ```bash
+# Clonar repositório
+git clone https://github.com/eubrunocoelho/ingestls.git
+
 # Criar ambiente virtual
 python -m venv .venv
 
