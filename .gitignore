@@ -11,6 +11,8 @@ env/
 __pycache__/
 *.py[cod]
 *$py.class
+.pytest_cache/
+.ruff_cache/
 
 # Variáveis de ambiente
 .env
