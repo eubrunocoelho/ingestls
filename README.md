@@ -148,3 +148,7 @@ curl -X POST http://127.0.0.1:5000/ingest \
 ```bash
 pytest -v
 ```
+
+---
+
+Software desenvolvido por [@eubrunocoelho](https://github.com/eubrunocoelho).
