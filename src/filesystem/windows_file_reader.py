@@ -1,9 +1,12 @@
+from charset_normalizer import from_path
 from pathlib import Path
 
 from src.dtos.file_read_result_dto import FileReadResultDTO
 from src.filesystem.directory_node import DirectoryNode
 from src.filesystem.file_inspector import FileInspector
 from src.filesystem.file_output_format import BINARY_FILE_FLAG, EMPTY_FILE_FLAG, FILE_END, FILE_START
+
+UNDECODABLE_FILE_FLAG = '[Undecodable File]'
 
 
 class WindowsFileReader:
@@ -24,11 +27,11 @@ class WindowsFileReader:
         )
 
     def _collect(
-            self,
-            node: DirectoryNode,
-            root_path: Path,
-            contents: list[str],
-            line_counts: list[int],
+        self,
+        node: DirectoryNode,
+        root_path: Path,
+        contents: list[str],
+        line_counts: list[int],
     ) -> None:
         for child in node.children:
             if child.is_directory:
@@ -59,7 +62,11 @@ class WindowsFileReader:
         if file_path.stat().st_size == 0:
             return EMPTY_FILE_FLAG
 
-        return file_path.read_text(encoding='utf-8')
+        try:
+            return file_path.read_text(encoding='utf-8')
+        except UnicodeDecodeError:
+            result = from_path(file_path).best()
+            return str(result) if result else UNDECODABLE_FILE_FLAG
 
     @staticmethod
     def _count_code_lines(content: str) -> int:
